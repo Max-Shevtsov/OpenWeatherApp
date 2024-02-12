@@ -1,5 +1,6 @@
 package com.max.openweatherapp.network
 
+import com.max.openweatherapp.model.ResultResponse
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
@@ -12,8 +13,8 @@ private val retrofit = Retrofit.Builder()
     .build()
 
 interface WeatherApiService {
-    @GET("data/3.0/onecall?lat=33.44&lon=-94.04&exclude=hourly,daily&appid=33b8f58fa9d36a34c79c1415a9e34827")
-    fun getBroadcast(): String
+    @GET("/data/2.5/weather?lat=44.34&lon=10.99&appid=33b8f58fa9d36a34c79c1415a9e34827")
+    suspend fun getBroadcast(): ResultResponse
 }
 
 object WeatherApi {
