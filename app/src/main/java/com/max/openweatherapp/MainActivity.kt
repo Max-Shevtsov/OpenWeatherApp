@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity() {
         val viewModel: MainViewModel by viewModels()
 
         lifecycleScope.launch(Dispatchers.Main) {
-            viewModel.uiState.collect{ state ->
+            viewModel.uiState.collect { state ->
                 Log.e("!!!", "SetContentView state: ${state.weather}")
                 binding.textView.text = state.weather.firstOrNull()?.main ?: "nothing"
             }
