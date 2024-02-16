@@ -2,7 +2,7 @@ package com.max.openweatherapp.model
 
 import com.google.gson.annotations.SerializedName
 
-data class SysResponse(
+data class Sys(
     @SerializedName("type")
     val type: Long,
     @SerializedName("id")

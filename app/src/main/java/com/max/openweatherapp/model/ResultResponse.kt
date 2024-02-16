@@ -2,9 +2,9 @@ package com.max.openweatherapp.model
 
 import com.google.gson.annotations.SerializedName
 
-data class ResultResponse (
+data class ResultResponse(
     @SerializedName("coord")
-    val coord: String? = null,
+    val coord: Coord,
     @SerializedName("weather")
     val weather: List<Weather>,
     @SerializedName("base")
@@ -15,8 +15,6 @@ data class ResultResponse (
     val visibility: Long,
     @SerializedName("wind")
     val wind: Wind,
-    @SerializedName("clouds")
-    val clouds: Clouds,
     @SerializedName("dt")
     val dt: Long,
     @SerializedName("sys")
