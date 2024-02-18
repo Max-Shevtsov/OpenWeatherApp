@@ -16,16 +16,19 @@ private val retrofit = Retrofit.Builder()
     .build()
 
 interface WeatherApiService {
-    @GET("/data/2.5/weather?appid=33b8f58fa9d36a34c79c1415a9e34827")
+    @GET("/data/2.5/weather")
     suspend fun getBroadcast(
-        @Query("lat") lat: Double,
-        @Query("lat") lon: Double
+        @Query("lat") lat: Double?,
+        @Query("lon") lon: Double?,
+        @Query("appid") apiId: String?
     ): ResultResponse
 
-    @GET("/geo/1.0/direct?limit=5&appid=33b8f58fa9d36a34c79c1415a9e34827")
+    @GET("/geo/1.0/direct")
     suspend fun getCoord(
-        @Query("q") gCity: String
-    ):GeocodingResponse
+        @Query("q") gCity: String?,
+        @Query("limit") limit: Int?,
+        @Query("appid") apiId: String?
+    ):List<GeocodingResponse>
 }
 
 object WeatherApi {

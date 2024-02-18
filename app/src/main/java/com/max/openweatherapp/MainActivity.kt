@@ -18,16 +18,16 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
 
         val viewModel: MainViewModel by viewModels()
 
-        var city = binding.editText.text.toString()
 
         binding.button.setOnClickListener {
+            var city = binding.editText.text.toString()
+
             viewModel._gCity.value = city
             viewModel.isButtonClicked.value = true
             Log.e("!!!", "button was clicked with City of ${viewModel._gCity.value}")

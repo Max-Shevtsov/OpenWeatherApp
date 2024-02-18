@@ -12,7 +12,9 @@ import com.max.openweatherapp.model.ResultResponse
 import com.max.openweatherapp.model.Sys
 import com.max.openweatherapp.model.Wind
 import com.max.openweatherapp.network.WeatherApi
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -40,17 +42,18 @@ class MainViewModel : ViewModel() {
     private val _uiState: MutableStateFlow<ResultResponse> = MutableStateFlow(defaultBroadcast)
     val uiState: StateFlow<ResultResponse> = _uiState.asStateFlow()
 
-    val isButtonClicked = MutableLiveData<Boolean>(false)
+    val isButtonClicked = MutableLiveData(false)
 
-    val _gCity = MutableLiveData<String>(null) // не смог засеттить из UI
+    val _gCity = MutableLiveData<String>(null) // не смог засеттить из UI, поэтому public
+    //val gCity: LiveData<String>
+//    get() = _gCity
 
-    //    val gCity: LiveData<String>
-//        get() = _gCity
+    // как лучше объявить без хардкода?
     private var lat = 10.34
     private var lon = 43.49
 
     init {
-
+        getResponseByClick()
 
     }
 
@@ -60,20 +63,31 @@ class MainViewModel : ViewModel() {
         }
     }
 
+    private suspend fun getCoord() =
+        WeatherApi.retrofitService.getCoord(
+            _gCity.value ?: "Kaliningrad",
+            1,
+            "33b8f58fa9d36a34c79c1415a9e34827"
+        )
+
+
     private fun getWeatherBroadcast() {
         viewModelScope.launch(Dispatchers.IO) {
 
             Log.e("!!!", "Start loading")
 
             try {
-                val gCoord = WeatherApi.retrofitService.getCoord(_gCity.value ?: "Kaliningrad")
-
-                lat = gCoord.lat
-                lon = gCoord.lon
-
+                val gCoord: Deferred<List<GeocodingResponse>> = async { getCoord() }
+//                lat = gCoord.await().lat
+//                lon = gCoord.await().lon
                 Log.e("!!!", "Coordinates:$gCoord")
 
-                val result = WeatherApi.retrofitService.getBroadcast(lat, lon)
+                val result = WeatherApi.retrofitService.getBroadcast(
+                    gCoord.await().firstOrNull()?.lat,
+                    gCoord.await().firstOrNull()?.lon,
+                    "33b8f58fa9d36a34c79c1415a9e34827"
+                )
+
                 _uiState.update { state ->
                     state.copy(
                         result.coord,
@@ -93,8 +107,6 @@ class MainViewModel : ViewModel() {
                 Log.e("!!!", "Broadcast: $result")
             } catch (e: IOException) {
             }
-
-
         }
     }
 }
