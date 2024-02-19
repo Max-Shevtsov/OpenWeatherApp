@@ -26,17 +26,15 @@ class MainActivity : AppCompatActivity() {
 
 
         binding.button.setOnClickListener {
-            var city = binding.editText.text.toString()
-
-            viewModel._gCity.value = city
+            viewModel._gCity.value = binding.editText.text.toString()
             viewModel.isButtonClicked.value = true
             Log.e("!!!", "button was clicked with City of ${viewModel._gCity.value}")
             viewModel.getResponseByClick()
         }
         lifecycleScope.launch(Dispatchers.Main) {
             viewModel.uiState.collect { state ->
-                Log.e("!!!", "SetContentView state: ${state.main}")
-                binding.textView.text = state.main.toString()
+                Log.e("!!!", "SetContentView state: ${state.temp} and ${state.pressure}")
+                binding.textView.text = "Temperature:${state.temp} Pressure:${state.pressure}"
             }
         }
 
