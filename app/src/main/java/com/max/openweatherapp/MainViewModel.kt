@@ -33,43 +33,18 @@ class MainViewModel : ViewModel() {
             pressure = 1,
             humidity = 1
         )
-//    private val defaultBroadcast: ResultUiState =
-//        ResultUiState(
-//            base = "nothing",
-//            weather = emptyList(),
-//            coord = Coord(10.99, 44.34),
-//            main = MainUiState(1.0, 1, 1),
-//            visibility = 1,
-//            wind = WindUiState(1.0, 1, 1.0),
-//            dt = 1,
-//            sys = Sys(1, 1, "RF", 1, 1),
-//            timezone = 1,
-//            id = 1,
-//            name = "1",
-//            cod = 1
-//        )
 
 
     private val _uiState: MutableStateFlow<MainUiState> = MutableStateFlow(defaultBroadcast)
     val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
 
-    val isButtonClicked = MutableLiveData(false)
-
-    val _gCity = MutableLiveData<String>(null) // не смог засеттить из UI, поэтому public
-    //val gCity: LiveData<String>
-//    get() = _gCity
-
-    // как лучше объявить без хардкода?
-    private var lat = 0.00
-    private var lon = 0.00
-
-    private fun getWeatherBroadcast() {
+    fun getWeatherBroadcast(city:String) {
         viewModelScope.launch(Dispatchers.IO) {
 
             Log.e("!!!", "Start loading")
 
             try {
-                val gCoord: Deferred<List<GeocodingResponse>> = async { getCoord() }
+                val gCoord: Deferred<List<GeocodingResponse>> = async { getCoord(city) }
 
                 Log.e("!!!", "Coordinates:$gCoord")
 
@@ -93,15 +68,9 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    fun getResponseByClick() {
-        if (isButtonClicked.value == true) {
-            getWeatherBroadcast()
-        }
-    }
-
-    private suspend fun getCoord() =
+    private suspend fun getCoord(city: String) =
         WeatherApi.retrofitService.getCoord(
-            _gCity.value ?: "Kaliningrad",
+            gCity = city?: "Kaliningrad",
             1,
             appid
         )
