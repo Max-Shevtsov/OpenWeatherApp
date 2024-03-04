@@ -15,29 +15,35 @@ import okhttp3.Dispatcher
 
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityMainBinding
+    private var viewBinding: ActivityMainBinding? = null
+    private val binding: ActivityMainBinding
+        get() = viewBinding!!
+
+    private val viewModel: MainViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        viewBinding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+        initListeners()
+        renderState()
+    }
 
-        val viewModel: MainViewModel by viewModels()
-
-
-        binding.button.setOnClickListener {
-            viewModel._gCity.value = binding.editText.text.toString()
-            viewModel.isButtonClicked.value = true
-            Log.e("!!!", "button was clicked with City of ${viewModel._gCity.value}")
-            viewModel.getResponseByClick()
-        }
+    private fun renderState() {
         lifecycleScope.launch(Dispatchers.Main) {
             viewModel.uiState.collect { state ->
                 Log.e("!!!", "SetContentView state: ${state.temp} and ${state.pressure}")
-                binding.textView.text = "Temperature:${state.temp} Pressure:${state.pressure}"
+                binding.textView.text = "Temperature:${state.temp} Pressure:${state.pressure}" // Вынести в строковые ресурсы
             }
         }
+    }
 
-
+    private fun initListeners() {
+        binding.button.setOnClickListener {
+            val city = binding.editText.text.toString()
+            Log.e("!!!", "button was clicked with City of ${viewModel._gCity.value}")
+            viewModel.getWeatherBroadcast(city)
+        }
     }
 }
