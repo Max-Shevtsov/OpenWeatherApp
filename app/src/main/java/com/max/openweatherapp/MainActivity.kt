@@ -1,5 +1,6 @@
 package com.max.openweatherapp
 
+import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -30,11 +31,16 @@ class MainActivity : AppCompatActivity() {
         renderState()
     }
 
+    @SuppressLint("StringFormatMatches")
     private fun renderState() {
         lifecycleScope.launch(Dispatchers.Main) {
             viewModel.uiState.collect { state ->
-                Log.e("!!!", "SetContentView state: ${state.temp} and ${state.pressure}")
-                binding.textView.text = "Temperature:${state.temp} Pressure:${state.pressure}" // Вынести в строковые ресурсы
+                Log.e("!!!", "SetContentView state: ${state.main} and ${state.wind}")
+                binding.textView.text = getString(
+                    R.string.broadcast,
+                    state.main,
+                    state.wind
+                ) // Вынес в строковые ресурсы
             }
         }
     }
@@ -42,7 +48,7 @@ class MainActivity : AppCompatActivity() {
     private fun initListeners() {
         binding.button.setOnClickListener {
             val city = binding.editText.text.toString()
-            Log.e("!!!", "button was clicked with City of ${viewModel._gCity.value}")
+            Log.e("!!!", "button was clicked with City of ${city}")
             viewModel.getWeatherBroadcast(city)
         }
     }

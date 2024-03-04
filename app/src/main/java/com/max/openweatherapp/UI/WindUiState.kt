@@ -2,7 +2,7 @@ package com.max.openweatherapp.UI
 
 
 data class WindUiState(
-    val speed: Double,
-    val deg: Long,
-    val gust: Double
+    val speed: Double = 0.0,
+    val deg: Long = 1L,
+    val gust: Double = 0.0,
 )

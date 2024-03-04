@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 
 data class MainUiState(
-    val temp: Double,
-    val pressure: Long,
-    val humidity: Long,
+    val temp: Double = 0.0,
+    val pressure: Long = 1L,
+    val humidity: Long = 1L,
 )

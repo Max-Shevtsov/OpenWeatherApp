@@ -26,19 +26,13 @@ import kotlinx.coroutines.launch
 import java.io.IOException
 
 class MainViewModel : ViewModel() {
-    private val appid = "33b8f58fa9d36a34c79c1415a9e34827"
-    private val defaultBroadcast: MainUiState =
-        MainUiState(
-            temp = 0.0,
-            pressure = 1,
-            humidity = 1
-        )
+    private val defaultBroadcast: ResultUiState = ResultUiState(MainUiState(), WindUiState())
 
 
-    private val _uiState: MutableStateFlow<MainUiState> = MutableStateFlow(defaultBroadcast)
-    val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
+    private val _uiState: MutableStateFlow<ResultUiState> = MutableStateFlow(defaultBroadcast)
+    val uiState: StateFlow<ResultUiState> = _uiState.asStateFlow()
 
-    fun getWeatherBroadcast(city:String) {
+    fun getWeatherBroadcast(city: String) {
         viewModelScope.launch(Dispatchers.IO) {
 
             Log.e("!!!", "Start loading")
@@ -51,15 +45,13 @@ class MainViewModel : ViewModel() {
                 val result = WeatherApi.retrofitService.getBroadcast(
                     gCoord.await().firstOrNull()?.lat,
                     gCoord.await().firstOrNull()?.lon,
-                    appid
                 )
 
-                val mainUiState = mapMainResponse(result.main)
+                val uiState = mapResultResponse(result)
                 _uiState.update { state ->
                     state.copy(
-                        mainUiState.temp,
-                        mainUiState.humidity,
-                        mainUiState.pressure
+                        uiState.main,
+                        uiState.wind
                     )
                 }
                 Log.e("!!!", "Broadcast: $result")
@@ -68,17 +60,17 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    private suspend fun getCoord(city: String) =
-        WeatherApi.retrofitService.getCoord(
-            gCity = city?: "Kaliningrad",
-            1,
-            appid
+    private suspend fun getCoord(city: String): List<GeocodingResponse> {
+        return WeatherApi.retrofitService.getCoord(
+            gCity = city ?: "Kaliningrad",
         )
+    }
 
-//    private fun mapResultResponse(
-//        mainMapper: (Main) -> MainUiState = ::mapMainResponse,
-//        windMapper: (Wind) -> WindUiState = ::mapWindResponse
-//    ) = ResultUiState(MainUiState(), WindUiState())
+    private fun mapResultResponse(
+        src: ResultResponse,
+        mainMapper: (Main) -> MainUiState = ::mapMainResponse,
+        windMapper: (Wind) -> WindUiState = ::mapWindResponse
+    ) = ResultUiState(mainMapper.invoke(src.main), windMapper.invoke(src.wind))
 
     private fun mapMainResponse(main: Main) =
         MainUiState(main.temp, main.pressure, main.humidity)
