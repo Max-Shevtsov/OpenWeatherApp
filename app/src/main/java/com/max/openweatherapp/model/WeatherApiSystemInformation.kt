@@ -2,10 +2,10 @@ package com.max.openweatherapp.model
 
 import com.google.gson.annotations.SerializedName
 
-data class Weather (
+data class WeatherApiSystemInformation (
     @SerializedName("id")
     val id: Long,
-    @SerializedName("main")
+    @SerializedName("weatherParamsResponse")
     val main: String,
     @SerializedName("description")
     val description: String,

@@ -2,7 +2,7 @@ package com.max.openweatherapp.model
 
 import com.google.gson.annotations.SerializedName
 
-data class Main(
+data class WeatherParamsResponse(
     @SerializedName("temp")
     val temp: Double,
     @SerializedName("feels_like")

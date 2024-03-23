@@ -2,23 +2,23 @@ package com.max.openweatherapp.model
 
 import com.google.gson.annotations.SerializedName
 
-data class ResultResponse(
+data class WeatherBroadcastResponse(
     @SerializedName("coord")
-    val coord: Coord,
-    @SerializedName("weather")
-    val weather: List<Weather>,
+    val coordinates: CoordinatesResponse,
+    @SerializedName("weatherApiSystemInformation")
+    val weatherApiSystemInformation: List<WeatherApiSystemInformation>,
     @SerializedName("base")
     val base: String,
-    @SerializedName("main")
-    val main: Main,
+    @SerializedName("weatherParamsResponse")
+    val weatherParamsResponse: WeatherParamsResponse,
     @SerializedName("visibility")
     val visibility: Long,
-    @SerializedName("wind")
-    val wind: Wind,
+    @SerializedName("windResponse")
+    val windResponse: WindResponse,
     @SerializedName("dt")
     val dt: Long,
-    @SerializedName("sys")
-    val sys: Sys,
+    @SerializedName("sunsetTimeResponse")
+    val sunsetTimeResponse: SunsetTimeResponse,
     @SerializedName("timezone")
     val timezone: Long,
     @SerializedName("id")

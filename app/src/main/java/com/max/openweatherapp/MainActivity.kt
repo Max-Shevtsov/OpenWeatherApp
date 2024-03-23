@@ -5,14 +5,11 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import com.max.openweatherapp.databinding.ActivityMainBinding
-import androidx.activity.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
+import com.max.openweatherapp.room.CityDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import okhttp3.Dispatcher
 
 
 class MainActivity : AppCompatActivity() {
@@ -20,12 +17,22 @@ class MainActivity : AppCompatActivity() {
     private val binding: ActivityMainBinding
         get() = viewBinding!!
 
-    private val viewModel: MainViewModel by viewModels()
+    private lateinit var viewModel: MainViewModel // адекватно ли так делать вообще, если я хочу использовать фабрику для передачи аргументов вью модели?
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         viewBinding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
+        // создаем базу данных
+        val application = requireNotNull(this).application
+        val dao = CityDatabase.getInstance(application).cityDao
+        // получаем viewModel
+        val viewModelFactory = MainViewModelFactory(dao)
+        viewModel = ViewModelProvider(
+            this, viewModelFactory
+        )[MainViewModel::class.java]
+
         setContentView(view)
         initListeners()
         renderState()
@@ -37,9 +44,7 @@ class MainActivity : AppCompatActivity() {
             viewModel.uiState.collect { state ->
                 Log.e("!!!", "SetContentView state: ${state.main} and ${state.wind}")
                 binding.textView.text = getString(
-                    R.string.broadcast,
-                    state.main,
-                    state.wind
+                    R.string.broadcast, state.main, state.wind
                 ) // Вынес в строковые ресурсы
             }
         }
@@ -48,8 +53,9 @@ class MainActivity : AppCompatActivity() {
     private fun initListeners() {
         binding.button.setOnClickListener {
             val city = binding.editText.text.toString()
-            Log.e("!!!", "button was clicked with City of ${city}")
+            Log.e("!!!", "button was clicked with City of $city")
             viewModel.getWeatherBroadcast(city)
+            viewModel.addCityToDatabase(city)
         }
     }
 }

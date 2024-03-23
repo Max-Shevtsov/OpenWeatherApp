@@ -2,10 +2,9 @@ package com.max.openweatherapp.model
 
 import com.google.gson.annotations.SerializedName
 
-data class GeocodingResponse(
+data class CoordinatesOfCityResponse(
     @SerializedName("name")
     val name: String,
-
     @SerializedName("local_names")
     val localNames: Map<String, String>? = null,
     @SerializedName("lat")

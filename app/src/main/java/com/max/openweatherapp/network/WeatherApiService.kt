@@ -1,11 +1,10 @@
 package com.max.openweatherapp.network
 
-import com.max.openweatherapp.model.GeocodingResponse
-import com.max.openweatherapp.model.ResultResponse
+import com.max.openweatherapp.model.CoordinatesOfCityResponse
+import com.max.openweatherapp.model.WeatherBroadcastResponse
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
-import retrofit2.http.Path
 import retrofit2.http.Query
 
 private const val BASE_URL = "https://api.openweathermap.org"
@@ -17,19 +16,19 @@ private val retrofit = Retrofit.Builder()
 
 interface WeatherApiService {
 
-    @GET("/data/2.5/weather")
+    @GET("/data/2.5/weatherApiSystemInformation")
     suspend fun getBroadcast(
         @Query("lat") lat: Double?,
         @Query("lon") lon: Double?,
         @Query("appid") apiId: String? = "33b8f58fa9d36a34c79c1415a9e34827",
-    ): ResultResponse
+    ): WeatherBroadcastResponse
 
     @GET("/geo/1.0/direct")
-    suspend fun getCoord(
-        @Query("q") gCity: String?,
+    suspend fun getCoordinatesOfCity(
+        @Query("q") city: String?,
         @Query("limit") limit: Int? = DEFAULT_LIMIT,
         @Query("appid") apiId: String? = "33b8f58fa9d36a34c79c1415a9e34827",
-    ):List<GeocodingResponse>
+    ):List<CoordinatesOfCityResponse>
 }
 
 object WeatherApi {
