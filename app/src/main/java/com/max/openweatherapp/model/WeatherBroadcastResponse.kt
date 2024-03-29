@@ -5,19 +5,19 @@ import com.google.gson.annotations.SerializedName
 data class WeatherBroadcastResponse(
     @SerializedName("coord")
     val coordinates: CoordinatesResponse,
-    @SerializedName("weatherApiSystemInformation")
+    @SerializedName("weather")
     val weatherApiSystemInformation: List<WeatherApiSystemInformation>,
     @SerializedName("base")
     val base: String,
-    @SerializedName("weatherParamsResponse")
+    @SerializedName("main")
     val weatherParamsResponse: WeatherParamsResponse,
     @SerializedName("visibility")
     val visibility: Long,
-    @SerializedName("windResponse")
+    @SerializedName("wind")
     val windResponse: WindResponse,
     @SerializedName("dt")
     val dt: Long,
-    @SerializedName("sunsetTimeResponse")
+    @SerializedName("sys")
     val sunsetTimeResponse: SunsetTimeResponse,
     @SerializedName("timezone")
     val timezone: Long,

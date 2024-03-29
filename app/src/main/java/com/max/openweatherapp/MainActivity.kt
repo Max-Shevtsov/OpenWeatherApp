@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.viewModels
 import com.max.openweatherapp.databinding.ActivityMainBinding
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -17,21 +18,15 @@ class MainActivity : AppCompatActivity() {
     private val binding: ActivityMainBinding
         get() = viewBinding!!
 
-    private lateinit var viewModel: MainViewModel // адекватно ли так делать вообще, если я хочу использовать фабрику для передачи аргументов вью модели?
+    private val viewModel: MainViewModel by viewModels {
+        MainViewModelFactory((application as CityApplication).repository)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         viewBinding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
-        // создаем базу данных
-        val application = requireNotNull(this).application
-        val dao = CityDatabase.getInstance(application).cityDao
-        // получаем viewModel
-        val viewModelFactory = MainViewModelFactory(dao)
-        viewModel = ViewModelProvider(
-            this, viewModelFactory
-        )[MainViewModel::class.java]
 
         setContentView(view)
         initListeners()
@@ -46,6 +41,7 @@ class MainActivity : AppCompatActivity() {
                 binding.textView.text = getString(
                     R.string.broadcast, state.main, state.wind
                 ) // Вынес в строковые ресурсы
+                binding.city.text = state.cityInDatabase.city.toString()
             }
         }
     }
@@ -55,7 +51,7 @@ class MainActivity : AppCompatActivity() {
             val city = binding.editText.text.toString()
             Log.e("!!!", "button was clicked with City of $city")
             viewModel.getWeatherBroadcast(city)
-            viewModel.addCityToDatabase(city)
+            viewModel.insert(city)
         }
     }
 }

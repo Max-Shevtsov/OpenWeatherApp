@@ -3,7 +3,9 @@ package com.max.openweatherapp.room
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.Query
 import androidx.room.Update
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CityDao {
@@ -15,4 +17,7 @@ interface CityDao {
 
     @Delete
     suspend fun delete(city: City)
+
+    @Query("SELECT * FROM city_table ORDER BY city_name ASC")
+    fun getAlphabetizedCity(): List<City>
 }

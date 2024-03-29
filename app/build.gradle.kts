@@ -1,6 +1,8 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("kotlin-android")
+    id("kotlin-kapt")
 }
 
 android {
@@ -36,6 +38,14 @@ android {
     buildFeatures {
         viewBinding = true
     }
+
+//    fun Packaging.() {
+//        exclude()() 'META-INF/atomicfu.kotlin_module'
+//    }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
 
 
@@ -46,9 +56,7 @@ dependencies {
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
-    implementation("androidx.lifecycle:lifecycle-viewmodel:2.7.0")
-    implementation("androidx.room:room-common:2.6.1")
-    implementation("androidx.room:room-ktx:2.6.1")
+
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
@@ -58,5 +66,13 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.5.0")
     implementation("com.squareup.retrofit2:adapter-rxjava2:2.5.0")
+    //Room
+    val roomVersion = "2.6.1"
+    implementation("androidx.room:room-runtime:$roomVersion")
+    implementation("androidx.room:room-ktx:$roomVersion")
+    implementation("androidx.room:room-common:roomVersion")
+    implementation("androidx.room:room-ktx:roomVersion")
+    kapt("androidx.room:room-compiler:$roomVersion")
+
 
 }

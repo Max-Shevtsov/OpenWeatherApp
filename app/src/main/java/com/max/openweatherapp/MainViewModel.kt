@@ -2,7 +2,9 @@ package com.max.openweatherapp
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.max.openweatherapp.UI.CityInDatabase
 import com.max.openweatherapp.UI.WeatherParams
 import com.max.openweatherapp.UI.MainActivityUiState
 import com.max.openweatherapp.UI.Wind
@@ -12,19 +14,18 @@ import com.max.openweatherapp.model.WeatherBroadcastResponse
 import com.max.openweatherapp.model.WindResponse
 import com.max.openweatherapp.network.WeatherApi
 import com.max.openweatherapp.room.City
-import com.max.openweatherapp.room.CityDao
-import kotlinx.coroutines.Deferred
+import com.max.openweatherapp.room.CityRepository
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.IOException
+import java.lang.IllegalArgumentException
 
-class MainViewModel(val dao: CityDao) : ViewModel() {
-    private val defaultBroadcast: MainActivityUiState = MainActivityUiState(WeatherParams(), Wind())
+class MainViewModel(private val repository: CityRepository) : ViewModel() {
+    private val defaultBroadcast: MainActivityUiState = MainActivityUiState(WeatherParams(), Wind(), CityInDatabase())
 
 
     private val _uiState: MutableStateFlow<MainActivityUiState> = MutableStateFlow(defaultBroadcast)
@@ -36,25 +37,24 @@ class MainViewModel(val dao: CityDao) : ViewModel() {
             Log.e("!!!", "Start loading")
 
             try {
-                val coordinates: Deferred<List<CoordinatesOfCityResponse>> =
-                    async { getCoordinatesOfCity(city) }
-
+                val coordinates = getCoordinatesOfCity(city)
                 Log.e("!!!", "Coordinates:$coordinates")
-
                 val result = WeatherApi.retrofitService.getBroadcast(
-                    coordinates.await().firstOrNull()?.lat,
-                    coordinates.await().firstOrNull()?.lon,
+                    coordinates.firstOrNull()?.lat,
+                    coordinates.firstOrNull()?.lon,
                 )
 
                 val uiState = mapResultResponse(result)
                 _uiState.update { state ->
                     state.copy(
                         main = uiState.main,
-                        wind = uiState.wind
+                        wind = uiState.wind,
+                        cityInDatabase = uiState.cityInDatabase
                     )
                 }
                 Log.e("!!!", "Broadcast: $result")
             } catch (e: IOException) {
+
             }
         }
     }
@@ -65,12 +65,10 @@ class MainViewModel(val dao: CityDao) : ViewModel() {
         )
     }
 
-    fun addCityToDatabase(city: String) {
-        viewModelScope.launch(Dispatchers.Default) {
-            val cityIntoDatabase = City()
-            cityIntoDatabase.cityName = city
-            dao.insert(cityIntoDatabase)
-        }
+    fun insert(city: String) = viewModelScope.launch {
+        val cityToDatabase = City()
+        cityToDatabase.cityName = city
+        repository.insert(cityToDatabase)
     }
 
     private fun mapResultResponse(
@@ -79,7 +77,8 @@ class MainViewModel(val dao: CityDao) : ViewModel() {
         windMapper: (WindResponse) -> Wind = ::mapWindResponse
     ) = MainActivityUiState(
         mainMapper.invoke(src.weatherParamsResponse),
-        windMapper.invoke(src.windResponse)
+        windMapper.invoke(src.windResponse),
+        CityInDatabase(repository.allCity)
     )
 
     private fun mapMainResponse(weatherParamsResponse: WeatherParamsResponse) =
@@ -90,7 +89,20 @@ class MainViewModel(val dao: CityDao) : ViewModel() {
         )
 
     private fun mapWindResponse(windResponse: WindResponse) =
-        Wind(windResponse.speed, windResponse.deg, windResponse.gust)
+        Wind(
+            windResponse.speed,
+            windResponse.deg,
+            windResponse.gust
+        )
+}
+
+class MainViewModelFactory(private val repository: CityRepository) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
+            return MainViewModel(repository) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel")
+    }
 }
 
 data class UiState(

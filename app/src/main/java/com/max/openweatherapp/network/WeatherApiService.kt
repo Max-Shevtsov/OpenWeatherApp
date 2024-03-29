@@ -16,10 +16,10 @@ private val retrofit = Retrofit.Builder()
 
 interface WeatherApiService {
 
-    @GET("/data/2.5/weatherApiSystemInformation")
+    @GET("/data/2.5/weather")
     suspend fun getBroadcast(
-        @Query("lat") lat: Double?,
-        @Query("lon") lon: Double?,
+        @Query("lat") lat: Double? = 10.99,
+        @Query("lon") lon: Double? = 44.34,
         @Query("appid") apiId: String? = "33b8f58fa9d36a34c79c1415a9e34827",
     ): WeatherBroadcastResponse
 
