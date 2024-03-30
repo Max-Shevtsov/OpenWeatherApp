@@ -50,8 +50,8 @@ class MainActivity : AppCompatActivity() {
         binding.button.setOnClickListener {
             val city = binding.editText.text.toString()
             Log.e("!!!", "button was clicked with City of $city")
-            viewModel.getWeatherBroadcast(city)
             viewModel.insert(city)
+            viewModel.getWeatherBroadcast(city)
         }
     }
 }

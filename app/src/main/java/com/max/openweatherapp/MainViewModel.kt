@@ -44,7 +44,7 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
                     coordinates.firstOrNull()?.lon,
                 )
 
-                val uiState = mapResultResponse(result)
+                val uiState = mapResultResponse(src = result, cityInDatabase = repository.allCity)
                 _uiState.update { state ->
                     state.copy(
                         main = uiState.main,
@@ -65,7 +65,7 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
         )
     }
 
-    fun insert(city: String) = viewModelScope.launch {
+    fun insert(city: String) = viewModelScope.launch(Dispatchers.Default) {
         val cityToDatabase = City()
         cityToDatabase.cityName = city
         repository.insert(cityToDatabase)
@@ -74,11 +74,13 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
     private fun mapResultResponse(
         src: WeatherBroadcastResponse,
         mainMapper: (WeatherParamsResponse) -> WeatherParams = ::mapMainResponse,
-        windMapper: (WindResponse) -> Wind = ::mapWindResponse
+        windMapper: (WindResponse) -> Wind = ::mapWindResponse,
+        cityInDatabase: List<City>
+
     ) = MainActivityUiState(
         mainMapper.invoke(src.weatherParamsResponse),
         windMapper.invoke(src.windResponse),
-        CityInDatabase(repository.allCity)
+        CityInDatabase()
     )
 
     private fun mapMainResponse(weatherParamsResponse: WeatherParamsResponse) =
