@@ -4,7 +4,9 @@ import androidx.annotation.WorkerThread
 
 class CityRepository(private  val cityDao: CityDao) {
 
-    val allCity = cityDao.getAlphabetizedCity()
+    suspend fun allCity(): List<City>{
+        return  cityDao.getAlphabetizedCity()
+    }
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
     suspend fun insert(city: City) {

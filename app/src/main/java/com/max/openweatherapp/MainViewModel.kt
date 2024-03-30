@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.max.openweatherapp.UI.CityInDatabase
 import com.max.openweatherapp.UI.WeatherParams
 import com.max.openweatherapp.UI.MainActivityUiState
 import com.max.openweatherapp.UI.Wind
@@ -25,7 +24,7 @@ import java.io.IOException
 import java.lang.IllegalArgumentException
 
 class MainViewModel(private val repository: CityRepository) : ViewModel() {
-    private val defaultBroadcast: MainActivityUiState = MainActivityUiState(WeatherParams(), Wind(), CityInDatabase())
+    private val defaultBroadcast: MainActivityUiState = MainActivityUiState(WeatherParams(), Wind(), cityInDatabase = emptyList())
 
 
     private val _uiState: MutableStateFlow<MainActivityUiState> = MutableStateFlow(defaultBroadcast)
@@ -39,12 +38,16 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
             try {
                 val coordinates = getCoordinatesOfCity(city)
                 Log.e("!!!", "Coordinates:$coordinates")
+
                 val result = WeatherApi.retrofitService.getBroadcast(
                     coordinates.firstOrNull()?.lat,
                     coordinates.firstOrNull()?.lon,
                 )
 
-                val uiState = mapResultResponse(src = result, cityInDatabase = repository.allCity)
+                val cityInDatabase = repository.allCity()
+                Log.e("!!!", "City`s: $cityInDatabase")
+
+                val uiState = mapResultResponse(src = result, cityInDatabase = cityInDatabase)
                 _uiState.update { state ->
                     state.copy(
                         main = uiState.main,
@@ -70,17 +73,16 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
         cityToDatabase.cityName = city
         repository.insert(cityToDatabase)
     }
-// привет
     private fun mapResultResponse(
         src: WeatherBroadcastResponse,
         mainMapper: (WeatherParamsResponse) -> WeatherParams = ::mapMainResponse,
         windMapper: (WindResponse) -> Wind = ::mapWindResponse,
-        cityInDatabase: List<City>
+        cityInDatabase: List<City>,
 
     ) = MainActivityUiState(
         mainMapper.invoke(src.weatherParamsResponse),
         windMapper.invoke(src.windResponse),
-        CityInDatabase()
+        cityInDatabase = emptyList()
     )
 
     private fun mapMainResponse(weatherParamsResponse: WeatherParamsResponse) =

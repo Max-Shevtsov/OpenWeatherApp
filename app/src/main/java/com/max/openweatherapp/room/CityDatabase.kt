@@ -1,6 +1,7 @@
 package com.max.openweatherapp.room
 
 import android.content.Context
+import android.util.Log
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -29,6 +30,7 @@ abstract class CityDatabase : RoomDatabase() {
                     .fallbackToDestructiveMigration()
                     .addCallback(CityDatabaseCallback(scope))
                     .build()
+                Log.e("!!!", "Database created")
                 INSTANCE = instance
                 instance
             }
@@ -36,19 +38,19 @@ abstract class CityDatabase : RoomDatabase() {
 
         private class CityDatabaseCallback(
             private val scope: CoroutineScope
-        ) : RoomDatabase.Callback() {
+        ) : Callback() {
             override fun onCreate(db: SupportSQLiteDatabase) {
                 super.onCreate(db)
-                INSTANCE?.let { database ->
+                INSTANCE?.let { cityDatabase ->
                     scope.launch(Dispatchers.IO) {
-                        populateDatabase(database.cityDao)
+                        populateDatabase(cityDatabase.cityDao)
                     }
                 }
             }
         }
 
         suspend fun populateDatabase(cityDao: CityDao) {
-
+            cityDao.deleteAll()
         }
     }
 }

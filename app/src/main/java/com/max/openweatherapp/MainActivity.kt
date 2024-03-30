@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
                 binding.textView.text = getString(
                     R.string.broadcast, state.main, state.wind
                 ) // Вынес в строковые ресурсы
-                binding.city.text = state.cityInDatabase.city.toString()
+                binding.city.text = state.cityInDatabase.toString()
             }
         }
     }
