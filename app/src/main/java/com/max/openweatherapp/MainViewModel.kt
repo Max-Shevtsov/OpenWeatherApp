@@ -70,7 +70,7 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
         cityToDatabase.cityName = city
         repository.insert(cityToDatabase)
     }
-
+// привет
     private fun mapResultResponse(
         src: WeatherBroadcastResponse,
         mainMapper: (WeatherParamsResponse) -> WeatherParams = ::mapMainResponse,
