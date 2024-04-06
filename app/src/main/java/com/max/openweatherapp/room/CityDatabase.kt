@@ -21,13 +21,13 @@ abstract class CityDatabase : RoomDatabase() {
             context: Context,
             scope: CoroutineScope
         ): CityDatabase {
-            return INSTANCE?: synchronized(this) {
+            return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     CityDatabase::class.java,
                     "city_database"
                 )
-                    .fallbackToDestructiveMigration()
+                    //.fallbackToDestructiveMigration()
                     .addCallback(CityDatabaseCallback(scope))
                     .build()
                 Log.e("!!!", "Database created")
@@ -39,8 +39,10 @@ abstract class CityDatabase : RoomDatabase() {
         private class CityDatabaseCallback(
             private val scope: CoroutineScope
         ) : Callback() {
-            override fun onCreate(db: SupportSQLiteDatabase) {
-                super.onCreate(db)
+            //            override fun onCreate(db: SupportSQLiteDatabase) {
+//                super.onCreate(db)
+            override fun onOpen(db: SupportSQLiteDatabase) {
+                super.onOpen(db)
                 INSTANCE?.let { cityDatabase ->
                     scope.launch(Dispatchers.IO) {
                         populateDatabase(cityDatabase.cityDao)
@@ -51,6 +53,7 @@ abstract class CityDatabase : RoomDatabase() {
 
         suspend fun populateDatabase(cityDao: CityDao) {
             cityDao.deleteAll()
+            Log.e("!!!", "all City`s deleted")
         }
     }
 }

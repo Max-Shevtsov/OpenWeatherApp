@@ -8,6 +8,8 @@ import androidx.activity.viewModels
 import com.max.openweatherapp.databinding.ActivityMainBinding
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.max.openweatherapp.adapters.WeatherBroadcastsAdapter
 import com.max.openweatherapp.room.CityDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -17,6 +19,8 @@ class MainActivity : AppCompatActivity() {
     private var viewBinding: ActivityMainBinding? = null
     private val binding: ActivityMainBinding
         get() = viewBinding!!
+
+    private val adapter = WeatherBroadcastsAdapter()
 
     private val viewModel: MainViewModel by viewModels {
         MainViewModelFactory((application as CityApplication).repository)
@@ -28,9 +32,14 @@ class MainActivity : AppCompatActivity() {
         viewBinding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
 
+        val recyclerView = binding.recyclerView
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = LinearLayoutManager(this)
+
         setContentView(view)
         initListeners()
         renderState()
+
     }
 
     @SuppressLint("StringFormatMatches")
@@ -38,11 +47,14 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch(Dispatchers.Main) {
             viewModel.uiState.collect { state ->
                 Log.e("!!!", "SetContentView state: ${state.main} and ${state.wind}")
-                binding.textView.text = getString(
-                    R.string.broadcast, state.main, state.wind
-                ) // Вынес в строковые ресурсы
-                binding.city.text = state.cityInDatabase.toString()
+                binding.weatherBroadcast.text = getString(
+                    R.string.broadcast, state.main.temp, state.wind.speed
+                )
+
+                adapter.submitList(state.city)
+
             }
+
         }
     }
 
@@ -54,4 +66,5 @@ class MainActivity : AppCompatActivity() {
             viewModel.getWeatherBroadcast(city)
         }
     }
+
 }

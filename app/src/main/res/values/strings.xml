@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">OpenWeatherApp</string>
     <string name="insert_city">Insert City</string>
-    <string name="broadcast">Temperature:%1$s Pressure:%2$s</string>
+    <string name="broadcast">Temperature:%1$s Wind:%2$s</string>
 </resources>

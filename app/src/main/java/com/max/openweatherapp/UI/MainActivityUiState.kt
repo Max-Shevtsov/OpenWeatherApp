@@ -5,5 +5,5 @@ import com.max.openweatherapp.room.City
 data class MainActivityUiState(
     val main: WeatherParams,
     val wind: Wind,
-    val cityInDatabase: List<City>,
+    var city: List<City> = emptyList(),
 )

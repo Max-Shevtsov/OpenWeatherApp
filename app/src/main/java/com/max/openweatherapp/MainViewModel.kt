@@ -24,7 +24,7 @@ import java.io.IOException
 import java.lang.IllegalArgumentException
 
 class MainViewModel(private val repository: CityRepository) : ViewModel() {
-    private val defaultBroadcast: MainActivityUiState = MainActivityUiState(WeatherParams(), Wind(), cityInDatabase = emptyList())
+    private val defaultBroadcast: MainActivityUiState = MainActivityUiState(WeatherParams(), Wind(),)
 
 
     private val _uiState: MutableStateFlow<MainActivityUiState> = MutableStateFlow(defaultBroadcast)
@@ -48,11 +48,12 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
                 Log.e("!!!", "City`s: $cityInDatabase")
 
                 val uiState = mapResultResponse(src = result, cityInDatabase = cityInDatabase)
+                uiState.city = repository.allCity()
                 _uiState.update { state ->
                     state.copy(
                         main = uiState.main,
                         wind = uiState.wind,
-                        cityInDatabase = uiState.cityInDatabase
+                        city = uiState.city
                     )
                 }
                 Log.e("!!!", "Broadcast: $result")
@@ -82,7 +83,6 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
     ) = MainActivityUiState(
         mainMapper.invoke(src.weatherParamsResponse),
         windMapper.invoke(src.windResponse),
-        cityInDatabase = emptyList()
     )
 
     private fun mapMainResponse(weatherParamsResponse: WeatherParamsResponse) =
