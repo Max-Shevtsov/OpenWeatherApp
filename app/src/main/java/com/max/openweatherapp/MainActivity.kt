@@ -72,7 +72,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.swipeRefresh.setOnRefreshListener {
-            Log.i("!!!", "onRefresh called from SwipeRefreshLayout") 
+            Log.e("!!!", "onRefresh called from SwipeRefreshLayout") 
             updateWeatherBroadcast()
         }
     }
