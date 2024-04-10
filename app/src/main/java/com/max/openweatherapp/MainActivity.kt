@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initListeners() {
-        binding.button.setOnClickListener {
+       // binding.button.setOnClickListener {
             //val city = binding.editText.text.toString()
             Log.e("!!!", "button was clicked with City of $city")
             if (Intent.ACTION_SEARCH == intent.action) {
@@ -70,7 +70,7 @@ class MainActivity : AppCompatActivity() {
                     viewModel.getWeatherBroadcast(query)
                 }
             }
-        }
+        //}
     }
 
     private fun onCreateOptionMenu(menu:Menu): Boolean {

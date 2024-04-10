@@ -4,9 +4,22 @@
     android:layout_height="wrap_content">
 
     <TextView
-        android:id="@+id/itemCity"
+        android:id="@+id/itemCityName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
+    <TextView
+        android:id="@+id/itemCityTemp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/itemCityName"/>
+    
+    <TextView
+        android:id="@+id/itemCityWindSpeed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@+id/itemCityTemp"
+        app:layout_constraintTop_toBottomOf="@+id/itemCityName"/>
 
 </LinearLayout>

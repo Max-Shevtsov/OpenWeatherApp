@@ -11,4 +11,10 @@ data class City(
 
     @ColumnInfo(name = "city_name")
     var cityName: String = ""
+
+    @ColumnInfo(name = "city_temp")
+    var cityTemp: String = ""
+
+    @ColumnInfo(name = "city_wind_speed")
+    var cityWindSpeed: String = ""
 )

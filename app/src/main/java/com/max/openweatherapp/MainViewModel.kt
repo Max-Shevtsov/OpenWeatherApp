@@ -44,18 +44,17 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
                     coordinates.firstOrNull()?.lon,
                 )
 
-                val cityInDatabase = repository.allCity()
                 Log.e("!!!", "City`s: $cityInDatabase")
 
-                val uiState = mapResultResponse(src = result, cityInDatabase = cityInDatabase)
-                uiState.city = repository.allCity()
-                _uiState.update { state ->
-                    state.copy(
-                        main = uiState.main,
-                        wind = uiState.wind,
-                        city = uiState.city
-                    )
-                }
+                updateUiState(result)
+
+                val cityIntoDb: City = City(
+                    cityName = city, 
+                    CityTemp = result.WeatherBroadcastResponse.weatherParamsResponse.temp,
+                    cityWindSpeed = result.WeatherBroadcastResponse.windResponse.speed,)
+
+                insert(cityIntoDb)
+
                 Log.e("!!!", "Broadcast: $result")
             } catch (e: IOException) {
 
@@ -69,17 +68,24 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
         )
     }
 
-    fun insert(city: String) = viewModelScope.launch(Dispatchers.Default) {
-        val cityToDatabase = City()
-        cityToDatabase.cityName = city
-        repository.insert(cityToDatabase)
+    fun insert(city: City) {
+        repository.insert(city)
+    }
+
+    private fun updateUiState(result: WeatherBroadcastResponse) {
+        val uiState = mapResultResponse(src = result)
+            _uiState.update { state ->
+                state.copy(
+                    main = uiState.main,
+                    wind = uiState.wind,
+                )
+            }
     }
     private fun mapResultResponse(
         src: WeatherBroadcastResponse,
         mainMapper: (WeatherParamsResponse) -> WeatherParams = ::mapMainResponse,
         windMapper: (WindResponse) -> Wind = ::mapWindResponse,
-        cityInDatabase: List<City>,
-
+        
     ) = MainActivityUiState(
         mainMapper.invoke(src.weatherParamsResponse),
         windMapper.invoke(src.windResponse),

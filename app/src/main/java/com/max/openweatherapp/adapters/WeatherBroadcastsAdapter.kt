@@ -31,7 +31,9 @@ class WeatherBroadcastsAdapter :
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(city: City) {
             with(binding) {
-                itemCity.text = city.cityName
+                itemCityName.text = city.cityName
+                itemCityTemp.text = city.cityTemp
+                itemCityWindSpeed.text = city.cityWindSpeed
             }
         }
     }
