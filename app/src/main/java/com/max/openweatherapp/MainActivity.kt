@@ -36,6 +36,8 @@ class MainActivity : AppCompatActivity() {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this)
 
+        private val intent = getIntent()
+
         setContentView(view)
         initListeners()
         renderState()
@@ -60,11 +62,26 @@ class MainActivity : AppCompatActivity() {
 
     private fun initListeners() {
         binding.button.setOnClickListener {
-            val city = binding.editText.text.toString()
+            //val city = binding.editText.text.toString()
             Log.e("!!!", "button was clicked with City of $city")
-            viewModel.insert(city)
-            viewModel.getWeatherBroadcast(city)
+            if (Intent.ACTION_SEARCH == intent.action) {
+                intent.getStringExtra(SearchManager.QUERY)?.also { query ->
+                    viewModel.insert(query)
+                    viewModel.getWeatherBroadcast(query)
+                }
+            }
         }
+    }
+
+    private fun onCreateOptionMenu(menu:Menu): Boolean {
+        menuInflater.inflate(R.menu.options_menu, menu)
+        
+        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
+        val searchView = menu.findItem(R.id.search).actionView as SearchView
+        val component = ComponentName(this)
+        val searchableInfo = searchManager.gerSearchableInfo(component)
+        searchView.setSearchableInfo(searchableInfo)
+        return true
     }
 
 }
