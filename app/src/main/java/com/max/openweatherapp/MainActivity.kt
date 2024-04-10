@@ -63,14 +63,18 @@ class MainActivity : AppCompatActivity() {
     private fun initListeners() {
        // binding.button.setOnClickListener {
             //val city = binding.editText.text.toString()
-            Log.e("!!!", "button was clicked with City of $city")
-            if (Intent.ACTION_SEARCH == intent.action) {
-                intent.getStringExtra(SearchManager.QUERY)?.also { query ->
-                    viewModel.insert(query)
-                    viewModel.getWeatherBroadcast(query)
-                }
+       // }
+        Log.e("!!!", "button was clicked with City of $city")
+        if (Intent.ACTION_SEARCH == intent.action) {
+            intent.getStringExtra(SearchManager.QUERY)?.also { query ->
+                viewModel.getWeatherBroadcast(query)
             }
-        //}
+        }
+
+        binding.swipeRefresh.setOnRefreshListener {
+            Log.i("!!!", "onRefresh called from SwipeRefreshLayout") 
+            updateWeatherBroadcast()
+        }
     }
 
     private fun onCreateOptionMenu(menu:Menu): Boolean {

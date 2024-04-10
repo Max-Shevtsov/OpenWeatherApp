@@ -12,6 +12,12 @@ data class City(
     @ColumnInfo(name = "city_name")
     var cityName: String = ""
 
+    @ColumnInfo(name = "city_lat")
+    var cityLat: String = ""
+
+    @ColumnInfo(name = "city_lon")
+    var cityLon: String = ""
+
     @ColumnInfo(name = "city_temp")
     var cityTemp: String = ""
 
