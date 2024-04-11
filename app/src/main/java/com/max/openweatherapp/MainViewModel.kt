@@ -85,6 +85,11 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
         repository.insert(city)
     }
 
+    fun deleteCityFromDb(cityId: Int) {
+        private val city = repository.getCityById(cityId)
+        repository.delete(city:City)
+    }
+
     private fun updateUiState(result: WeatherBroadcastResponse) {
         val uiState = mapResultResponse(src = result)
         uiState.city = repository.allCity()

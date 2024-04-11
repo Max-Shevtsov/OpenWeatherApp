@@ -20,17 +20,22 @@ class MainActivity : AppCompatActivity() {
     private val binding: ActivityMainBinding
         get() = viewBinding!!
 
-    private val adapter = WeatherBroadcastsAdapter()
 
     private val viewModel: MainViewModel by viewModels {
         MainViewModelFactory((application as CityApplication).repository)
     }
+
+    
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         viewBinding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
+
+        val adapter = WeatherBroadcastsAdapter { cityId ->
+            viewModel.deleteCityFromDb(it)
+        }
 
         val recyclerView = binding.recyclerView
         recyclerView.adapter = adapter
@@ -72,7 +77,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.swipeRefresh.setOnRefreshListener {
-            Log.i("!!!", "onRefresh called from SwipeRefreshLayout") 
+            Log.e("!!!", "onRefresh called from SwipeRefreshLayout") 
             updateWeatherBroadcast()
         }
     }

@@ -1,12 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
+
+    
 
     <TextView
         android:id="@+id/itemCityName"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="parent"/>
+        
+    <button
+        android:id="@+id/itemDeleteButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="delete"
+        app:layout_constraintStart_toEndOf="@+id/itemCityName"
+        app:layout_constraintTop_toBottomOf="parent"/>
 
     <TextView
         android:id="@+id/itemCityTemp"
@@ -22,4 +34,4 @@
         app:layout_constraintStart_toStartOf="@+id/itemCityTemp"
         app:layout_constraintTop_toBottomOf="@+id/itemCityName"/>
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

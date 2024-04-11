@@ -18,6 +18,9 @@ interface CityDao {
     @Delete
     suspend fun delete(city: City)
 
+    @Query("SELECT * FROM city_table WHERE city_Id= :cityId")
+    suspend fun getCityById(cityId: Int)
+
     @Query("SELECT * FROM city_table ORDER BY city_name ASC")
     suspend fun getAlphabetizedCity(): List<City>
 
