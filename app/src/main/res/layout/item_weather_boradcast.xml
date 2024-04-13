@@ -8,31 +8,35 @@
 
     <TextView
         android:id="@+id/itemCityName"
-        android:layout_width="match_parent"
+        android:hint="City"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"/>
         
     <Button
         android:id="@+id/itemDeleteButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="delete"
-        app:layout_constraintStart_toEndOf="@+id/itemCityName"
-        app:layout_constraintTop_toBottomOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/itemCityName"/>
 
     <TextView
         android:id="@+id/itemCityTemp"
-        android:layout_width="match_parent"
+        android:hint="temperature"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/itemCityName"/>
-    
+
     <TextView
         android:id="@+id/itemCityWindSpeed"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="@+id/itemCityTemp"
-        app:layout_constraintTop_toBottomOf="@+id/itemCityName"/>
+        android:layout_marginStart="68dp"
+        android:hint="wind"
+        app:layout_constraintStart_toEndOf="@id/itemCityTemp"
+        app:layout_constraintTop_toBottomOf="@+id/itemCityName" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

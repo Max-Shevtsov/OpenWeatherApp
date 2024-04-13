@@ -42,10 +42,7 @@ class MainActivity : AppCompatActivity() {
         val view = binding.root
 
         adapter = WeatherBroadcastsAdapter { cityId ->
-            lifecycleScope.launch {
-                viewModel.deleteCityFromDb(cityId)
-            }
-
+            viewModel.deleteCityFromDb(cityId)
         }
 
         val recyclerView = binding.recyclerView
@@ -61,35 +58,19 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("StringFormatMatches")
     private fun renderState() {
-        lifecycleScope.launch(Dispatchers.Main) {
-            viewModel.uiState.collect { state ->
-                Log.e("!!!", "SetContentView state: ${state.main} and ${state.wind}")
-//                binding.weatherBroadcast.text = getString(
-//                    R.string.broadcast, state.main.temp, state.wind.speed
-//                )
-                adapter.submitList(state.city)
-
-            }
-
+        viewModel.uiState.observe(this) { city ->
+            city.let { adapter.submitList(it) }
         }
     }
 
     private fun initListeners() {
-       // binding.button.setOnClickListener {
-            //val city = binding.editText.text.toString()
-       // }
-        //Log.e("!!!", "button was clicked with City of $city")
-        val intent = intent
-
-
-
         binding.swipeRefresh.setOnRefreshListener {
-            Log.e("!!!", "onRefresh called from SwipeRefreshLayout") 
-            viewModel.updateWeatherBroadcast()
+            Log.e("!!!", "onRefresh called from SwipeRefreshLayout")
+            //viewModel.updateWeatherBroadcast()
         }
     }
 
-    override fun onCreateOptionsMenu(menu:Menu): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.options_menu, menu)
 
         val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager

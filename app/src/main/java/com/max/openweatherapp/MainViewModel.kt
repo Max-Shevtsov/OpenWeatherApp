@@ -1,8 +1,12 @@
 package com.max.openweatherapp
 
 import android.util.Log
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
 import com.max.openweatherapp.UI.WeatherParams
 import com.max.openweatherapp.UI.MainActivityUiState
@@ -17,6 +21,7 @@ import com.max.openweatherapp.room.CityRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -24,11 +29,8 @@ import java.io.IOException
 import java.lang.IllegalArgumentException
 
 class MainViewModel(private val repository: CityRepository) : ViewModel() {
-    private val defaultBroadcast: MainActivityUiState = MainActivityUiState(WeatherParams(), Wind(),)
 
-
-    private val _uiState: MutableStateFlow<MainActivityUiState> = MutableStateFlow(defaultBroadcast)
-    val uiState: StateFlow<MainActivityUiState> = _uiState.asStateFlow()
+    val uiState: LiveData<List<City>> = repository.allCity.asLiveData()
 
     fun getWeatherBroadcast(city: String) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -46,27 +48,17 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
 
                 Log.e("!!!", "City`s: $city")
 
-                
-               
 
                 val cityIntoDb = City(
                     cityName = city,
                     cityLat = coordinates.first().lat,
                     cityLon = coordinates.first().lon,
                     cityTemp = result.weatherParamsResponse.temp,
-                    cityWindSpeed = result.windResponse.speed,)
+                    cityWindSpeed = result.windResponse.speed,
+                )
 
                 insert(cityIntoDb)
 
-                val uiState = mapResultResponse(src = result)
-                uiState.city = repository.allCity()
-                _uiState.update { state ->
-                    state.copy(
-                        main = uiState.main,
-                        wind = uiState.wind,
-                        city = uiState.city
-                    )
-                }
                 Log.e("!!!", "Broadcast: $result")
             } catch (e: IOException) {
 
@@ -74,15 +66,16 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
         }
     }
 
-    fun updateWeatherBroadcast() {
-        viewModelScope.launch {
-            val city = repository.allCity()
-            city.forEach {city ->
-                WeatherApi.retrofitService.getBroadcast(city.cityLat, city.cityLon)
-            }
-        }
-
-    }
+//    fun updateWeatherBroadcast() {
+//        viewModelScope.launch {
+//            val city = repository.
+//
+//            city.forEach {city ->
+//               WeatherApi.retrofitService.getBroadcast(city.cityLat, city.cityLon)
+//            }
+//        }
+//
+//    }
 
     private suspend fun getCoordinatesOfCity(city: String): List<CoordinatesOfCityResponse> {
         return WeatherApi.retrofitService.getCoordinatesOfCity(
@@ -94,37 +87,12 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
         repository.insert(city)
     }
 
-    suspend fun deleteCityFromDb(cityId: Long) {
-        val city = repository.getCityById((cityId))
-        repository.delete(city)
+    fun deleteCityFromDb(cityId: Long) {
+        viewModelScope.launch {
+            val city = repository.getCityById((cityId))
+            repository.delete(city)
+        }
     }
-
-    private suspend fun updateUiState(result: WeatherBroadcastResponse) {
-
-    }
-    private fun mapResultResponse(
-        src: WeatherBroadcastResponse,
-        mainMapper: (WeatherParamsResponse) -> WeatherParams = ::mapMainResponse,
-        windMapper: (WindResponse) -> Wind = ::mapWindResponse,
-        
-    ) = MainActivityUiState(
-        mainMapper.invoke(src.weatherParamsResponse),
-        windMapper.invoke(src.windResponse),
-    )
-
-    private fun mapMainResponse(weatherParamsResponse: WeatherParamsResponse) =
-        WeatherParams(
-            weatherParamsResponse.temp,
-            weatherParamsResponse.pressure,
-            weatherParamsResponse.humidity
-        )
-
-    private fun mapWindResponse(windResponse: WindResponse) =
-        Wind(
-            windResponse.speed,
-            windResponse.deg,
-            windResponse.gust
-        )
 }
 
 class MainViewModelFactory(private val repository: CityRepository) : ViewModelProvider.Factory {
