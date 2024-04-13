@@ -27,6 +27,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.IOException
 import java.lang.IllegalArgumentException
+const val KELVIN_TO_CELSIUS = 273.15
 
 class MainViewModel(private val repository: CityRepository) : ViewModel() {
 
@@ -37,38 +38,38 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
 
             Log.e("!!!", "Start loading")
 
-            try {
-                val coordinates = getCoordinatesOfCity(city)
-                Log.e("!!!", "Coordinates:$coordinates")
 
-                val result = WeatherApi.retrofitService.getBroadcast(
-                    coordinates.firstOrNull()?.lat,
-                    coordinates.firstOrNull()?.lon,
-                )
+            val coordinates = getCoordinatesOfCity(city)
+            Log.e("!!!", "Coordinates:$coordinates")
 
-                Log.e("!!!", "City`s: $city")
+            val result = WeatherApi.retrofitService.getBroadcast(
+                coordinates.firstOrNull()?.lat,
+                coordinates.firstOrNull()?.lon,
+            )
 
+            Log.e("!!!", "City`s: $city")
 
+            viewModelScope.launch {
                 val cityIntoDb = City(
                     cityName = city,
                     cityLat = coordinates.first().lat,
                     cityLon = coordinates.first().lon,
-                    cityTemp = result.weatherParamsResponse.temp,
-                    cityWindSpeed = result.windResponse.speed,
+                    cityTemp = "${(result.weatherParamsResponse.temp - KELVIN_TO_CELSIUS).toUInt()} C",
+                    cityWindSpeed = "${result.windResponse.speed} М/С",
                 )
 
                 insert(cityIntoDb)
-
-                Log.e("!!!", "Broadcast: $result")
-            } catch (e: IOException) {
-
             }
+
+
+            Log.e("!!!", "Broadcast: $result")
+
         }
     }
 
 //    fun updateWeatherBroadcast() {
 //        viewModelScope.launch {
-//            val city = repository.
+//            val city = repository.allCity
 //
 //            city.forEach {city ->
 //               WeatherApi.retrofitService.getBroadcast(city.cityLat, city.cityLon)

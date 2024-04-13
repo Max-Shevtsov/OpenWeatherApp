@@ -2,6 +2,7 @@ package com.max.openweatherapp.room
 
 import androidx.annotation.WorkerThread
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
 
 class CityRepository(private  val cityDao: CityDao) {
     val allCity: Flow<List<City>> = cityDao.getAlphabetizedCity()

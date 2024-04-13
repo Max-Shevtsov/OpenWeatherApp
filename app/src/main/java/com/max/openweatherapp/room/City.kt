@@ -13,10 +13,10 @@ data class City(
     var cityName: String = "",
 
     @ColumnInfo(name = "city_temperature")
-    var cityTemp: Double = 0.0,
+    var cityTemp: String = "",
 
     @ColumnInfo(name = "city_wind_speed")
-    var cityWindSpeed: Double = 0.0,
+    var cityWindSpeed: String = "",
 
     @ColumnInfo(name = "city_lat")
     var cityLat: Double = 0.0,
