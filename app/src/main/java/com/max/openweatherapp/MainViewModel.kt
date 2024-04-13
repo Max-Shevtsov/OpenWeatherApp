@@ -44,22 +44,29 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
                     coordinates.firstOrNull()?.lon,
                 )
 
-                Log.e("!!!", "City`s: $cityInDatabase")
+                Log.e("!!!", "City`s: $city")
 
                 
                
 
-                val cityIntoDb: City = City(
+                val cityIntoDb = City(
                     cityName = city,
-                    cityLat = coordinates.firstOrNull()?.lat,
-                    cityLon = coordinates.firstOrNull()?.lon,
-                    CityTemp = result.WeatherBroadcastResponse.weatherParamsResponse.temp,
-                    cityWindSpeed = result.WeatherBroadcastResponse.windResponse.speed,)
+                    cityLat = coordinates.first().lat,
+                    cityLon = coordinates.first().lon,
+                    cityTemp = result.weatherParamsResponse.temp,
+                    cityWindSpeed = result.windResponse.speed,)
 
                 insert(cityIntoDb)
 
-                updateUiState(result) 
-
+                val uiState = mapResultResponse(src = result)
+                uiState.city = repository.allCity()
+                _uiState.update { state ->
+                    state.copy(
+                        main = uiState.main,
+                        wind = uiState.wind,
+                        city = uiState.city
+                    )
+                }
                 Log.e("!!!", "Broadcast: $result")
             } catch (e: IOException) {
 
@@ -68,11 +75,13 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
     }
 
     fun updateWeatherBroadcast() {
-        val city = repository.allcity()
-        city.forEach {it ->
-            WeatherApi.retrofitService.getBroadcast(city.lat, city.lon)
+        viewModelScope.launch {
+            val city = repository.allCity()
+            city.forEach {city ->
+                WeatherApi.retrofitService.getBroadcast(city.cityLat, city.cityLon)
+            }
         }
-        updateUiState(result)
+
     }
 
     private suspend fun getCoordinatesOfCity(city: String): List<CoordinatesOfCityResponse> {
@@ -81,25 +90,17 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
         )
     }
 
-    fun insert(city: City) {
+    suspend fun insert(city: City) {
         repository.insert(city)
     }
 
-    fun deleteCityFromDb(cityId: Int) {
-        private val city = repository.getCityById(cityId)
-        repository.delete(city:City)
+    suspend fun deleteCityFromDb(cityId: Long) {
+        val city = repository.getCityById((cityId))
+        repository.delete(city)
     }
 
-    private fun updateUiState(result: WeatherBroadcastResponse) {
-        val uiState = mapResultResponse(src = result)
-        uiState.city = repository.allCity()
-            _uiState.update { state ->
-                state.copy(
-                    main = uiState.main,
-                    wind = uiState.wind,
-                    city = uiState.city
-                )
-            }
+    private suspend fun updateUiState(result: WeatherBroadcastResponse) {
+
     }
     private fun mapResultResponse(
         src: WeatherBroadcastResponse,

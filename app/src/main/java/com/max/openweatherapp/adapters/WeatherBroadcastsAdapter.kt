@@ -12,7 +12,7 @@ import com.max.openweatherapp.room.City
 import com.max.openweatherapp.room.CityDatabase
 import com.max.openweatherapp.room.CityRepository
 
-class WeatherBroadcastsAdapter(private val cityDeleteListener: (cityId:Int) -> Unit ) :
+class WeatherBroadcastsAdapter(private val cityDeleteListener: (cityId:Long) -> Unit ) :
     ListAdapter<City, WeatherBroadcastsAdapter.ViewHolder>(ALL_CITY) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -32,11 +32,11 @@ class WeatherBroadcastsAdapter(private val cityDeleteListener: (cityId:Int) -> U
     ) : RecyclerView.ViewHolder(binding.root) {
 
 
-        fun bind(city: City, cityDeleteListener: (cityId: Int) -> Unit) {
+        fun bind(city: City, cityDeleteListener: (cityId: Long) -> Unit) {
             with(binding) {
                 itemCityName.text = city.cityName
-                itemCityTemp.text = city.cityTemp
-                itemCityWindSpeed.text = city.cityWindSpeed
+                itemCityTemp.text = city.cityTemp.toString()
+                itemCityWindSpeed.text = city.cityWindSpeed.toString()
                 itemDeleteButton.setOnClickListener { cityDeleteListener(city.cityId)
 
                 }
@@ -55,9 +55,4 @@ class WeatherBroadcastsAdapter(private val cityDeleteListener: (cityId:Int) -> U
             }
         }
     }
-
-    interface cityActionListener {
-        fun onCityDelete(city: City)
-    }
-
 }

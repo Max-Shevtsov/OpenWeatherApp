@@ -10,7 +10,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-@Database(entities = [City::class], version = 1, exportSchema = false)
+@Database(entities = [City::class], version = 3, exportSchema = false)
 abstract class CityDatabase : RoomDatabase() {
     abstract val cityDao: CityDao
 
@@ -27,7 +27,7 @@ abstract class CityDatabase : RoomDatabase() {
                     CityDatabase::class.java,
                     "city_database"
                 )
-                    //.fallbackToDestructiveMigration()
+                    .fallbackToDestructiveMigration()
                     .addCallback(CityDatabaseCallback(scope))
                     .build()
                 Log.e("!!!", "Database created")
@@ -41,7 +41,7 @@ abstract class CityDatabase : RoomDatabase() {
         ) : Callback() {
             //            override fun onCreate(db: SupportSQLiteDatabase) {
 //                super.onCreate(db)
-            override fun onOpen(db: SupportSQLiteDatabase) {
+            override fun onCreate(db: SupportSQLiteDatabase) {
                 super.onOpen(db)
                 INSTANCE?.let { cityDatabase ->
                     scope.launch(Dispatchers.IO) {

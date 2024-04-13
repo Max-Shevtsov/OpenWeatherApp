@@ -17,8 +17,8 @@ class CityRepository(private  val cityDao: CityDao) {
         cityDao.delete(city)
     }
 
-    suspendfun getCityById(cityId: Int) {
-        cityDao.getcityById(cityId)
+    suspend fun getCityById(cityId: Long): City {
+        return cityDao.getCityById(cityId)
     }
 
 

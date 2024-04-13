@@ -1,16 +1,24 @@
 package com.max.openweatherapp
 
 import android.annotation.SuppressLint
+import android.app.SearchManager
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
 import androidx.activity.viewModels
+import androidx.appcompat.widget.SearchView
+import androidx.lifecycle.LifecycleCoroutineScope
 import com.max.openweatherapp.databinding.ActivityMainBinding
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.max.openweatherapp.adapters.WeatherBroadcastsAdapter
 import com.max.openweatherapp.room.CityDatabase
+import com.max.openweatherapp.room.CityRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -25,7 +33,7 @@ class MainActivity : AppCompatActivity() {
         MainViewModelFactory((application as CityApplication).repository)
     }
 
-    
+    private lateinit var adapter: WeatherBroadcastsAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,17 +41,19 @@ class MainActivity : AppCompatActivity() {
         viewBinding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
 
-        val adapter = WeatherBroadcastsAdapter { cityId ->
-            viewModel.deleteCityFromDb(it)
+        adapter = WeatherBroadcastsAdapter { cityId ->
+            lifecycleScope.launch {
+                viewModel.deleteCityFromDb(cityId)
+            }
+
         }
 
         val recyclerView = binding.recyclerView
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        private val intent = getIntent()
-
         setContentView(view)
+        setSupportActionBar(binding.toolBar)
         initListeners()
         renderState()
 
@@ -54,10 +64,9 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch(Dispatchers.Main) {
             viewModel.uiState.collect { state ->
                 Log.e("!!!", "SetContentView state: ${state.main} and ${state.wind}")
-                binding.weatherBroadcast.text = getString(
-                    R.string.broadcast, state.main.temp, state.wind.speed
-                )
-
+//                binding.weatherBroadcast.text = getString(
+//                    R.string.broadcast, state.main.temp, state.wind.speed
+//                )
                 adapter.submitList(state.city)
 
             }
@@ -69,28 +78,32 @@ class MainActivity : AppCompatActivity() {
        // binding.button.setOnClickListener {
             //val city = binding.editText.text.toString()
        // }
-        Log.e("!!!", "button was clicked with City of $city")
+        //Log.e("!!!", "button was clicked with City of $city")
+        val intent = intent
+
+
+
+        binding.swipeRefresh.setOnRefreshListener {
+            Log.e("!!!", "onRefresh called from SwipeRefreshLayout") 
+            viewModel.updateWeatherBroadcast()
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu:Menu): Boolean {
+        menuInflater.inflate(R.menu.options_menu, menu)
+
+        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
+        val searchView = menu.findItem(R.id.search).actionView as SearchView
+        val component = componentName
+        val searchableInfo = searchManager.getSearchableInfo(component)
+        searchView.setSearchableInfo(searchableInfo)
+
         if (Intent.ACTION_SEARCH == intent.action) {
             intent.getStringExtra(SearchManager.QUERY)?.also { query ->
                 viewModel.getWeatherBroadcast(query)
             }
         }
-
-        binding.swipeRefresh.setOnRefreshListener {
-            Log.e("!!!", "onRefresh called from SwipeRefreshLayout") 
-            updateWeatherBroadcast()
-        }
-    }
-
-    private fun onCreateOptionMenu(menu:Menu): Boolean {
-        menuInflater.inflate(R.menu.options_menu, menu)
-        
-        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
-        val searchView = menu.findItem(R.id.search).actionView as SearchView
-        val component = ComponentName(this)
-        val searchableInfo = searchManager.gerSearchableInfo(component)
-        searchView.setSearchableInfo(searchableInfo)
-        return true
+        return super.onCreateOptionsMenu(menu)
     }
 
 }
