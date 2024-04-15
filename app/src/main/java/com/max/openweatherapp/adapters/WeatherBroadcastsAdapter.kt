@@ -47,7 +47,7 @@ class WeatherBroadcastsAdapter(private val cityDeleteListener: (cityId:Long) -> 
     companion object {
         private val ALL_CITY = object : DiffUtil.ItemCallback<City>() {
             override fun areItemsTheSame(oldItem: City, newItem: City): Boolean {
-                return oldItem === newItem
+                return oldItem.cityId === newItem.cityId
             }
 
             override fun areContentsTheSame(oldItem: City, newItem: City): Boolean {
