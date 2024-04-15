@@ -58,8 +58,14 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("StringFormatMatches")
     private fun renderState() {
-        viewModel.uiState.observe(this) { city ->
-            city.let { adapter.submitList(it) }
+        lifecycleScope.launch(Dispatchers.Main) {
+            viewModel.uiState.collect { state ->
+                adapter.submuitList(state.allCity)
+                if(state.errorMessage? != null)
+                    val toast = Toast.makeText(context, state.errorMessage).show()
+        // удалить, если то, что выше, заработает
+        //viewModel.uiState.observe(this) { city ->
+        //    city.let { adapter.submitList(it) }
         }
     }
 

@@ -30,13 +30,13 @@ import java.lang.IllegalArgumentException
 
 class MainViewModel(private val repository: CityRepository) : ViewModel() {
 
-    val uiState: LiveData<List<City>> = repository.allCity.asLiveData()
+    val _uiState: MutableStateFlow<MainActivityUiState> = MutableStateFlow(MainActivityUiState())
+    val uiState: StateFlow<MainActivityUiState = _uiState.asStateFlow()
 
     fun getWeatherBroadcast(city: String) {
         viewModelScope.launch(Dispatchers.IO) {
-
+        try{
             Log.e("!!!", "Start loading")
-
 
             val coordinates = getCoordinatesOfCity(city)
             Log.e("!!!", "Coordinates:$coordinates")
@@ -58,9 +58,16 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
                 )
 
                 repository.insert(cityIntoDb)
+                val allCity = repository.allCity()
+                _uiState.update{
+                    it.copy(allCity = allCity)
+                }
+            }catch(ioe: IOExceptions) {
+                _uiState.update{
+                    val message = getMessagesFromThrowable(ioe)
+                    it.copy(errorMessage = message)
             }
-
-
+        }
             Log.e("!!!", "Broadcast: $result")
 
         }
@@ -68,7 +75,7 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
 
     fun updateWeatherBroadcast() {
         viewModelScope.launch {
-            val allCity = repository.allCity
+            val allCity = repository.allCity()
             allCity.forEach {city ->
                val result = WeatherApi.retrofitService.getBroadcast(city.cityLat, city.cityLon)
 
@@ -76,7 +83,11 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
                city.cityWindSpeed = "${result.windResponse.speed} М/С"
                
                repository.update(city)
+               }
             }
+
+            _uiState.update{
+                it.copy(allCity = allCity)
 
         }
 
@@ -87,8 +98,6 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
             city = city,
         )
     }
-
-
 
     fun deleteCityFromDb(cityId: Long) {
         viewModelScope.launch {
@@ -113,8 +122,3 @@ class MainViewModelFactory(private val repository: CityRepository) : ViewModelPr
     }
 }
 
-data class UiState(
-    var result: WeatherBroadcastResponse? = null,
-    var errorMessage: String? = null,
-    var isLoading: Boolean = true
-)
