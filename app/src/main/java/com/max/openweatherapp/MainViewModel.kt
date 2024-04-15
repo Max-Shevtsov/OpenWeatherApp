@@ -27,7 +27,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.IOException
 import java.lang.IllegalArgumentException
-const val KELVIN_TO_CELSIUS = 273.15
 
 class MainViewModel(private val repository: CityRepository) : ViewModel() {
 
@@ -54,11 +53,11 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
                     cityName = city,
                     cityLat = coordinates.first().lat,
                     cityLon = coordinates.first().lon,
-                    cityTemp = "${(result.weatherParamsResponse.temp - KELVIN_TO_CELSIUS).toUInt()} C",
+                    cityTemp = kelvinToCelsiusConverter(result.weatherParamsResponse.temp),
                     cityWindSpeed = "${result.windResponse.speed} М/С",
                 )
 
-                insert(cityIntoDb)
+                repository.insert(cityIntoDb)
             }
 
 
@@ -67,16 +66,21 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
         }
     }
 
-//    fun updateWeatherBroadcast() {
-//        viewModelScope.launch {
-//            val city = repository.allCity
-//
-//            city.forEach {city ->
-//               WeatherApi.retrofitService.getBroadcast(city.cityLat, city.cityLon)
-//            }
-//        }
-//
-//    }
+    fun updateWeatherBroadcast() {
+        viewModelScope.launch {
+            val allCity = repository.allCity
+            allCity.forEach {city ->
+               val result = WeatherApi.retrofitService.getBroadcast(city.cityLat, city.cityLon)
+
+               city.cityTemp = kelvinToCelsiusConverter(result.weatherParamsResponse.temp),
+               city.cityWindSpeed = "${result.windResponse.speed} М/С"
+               
+               repository.update(city)
+            }
+
+        }
+
+    }
 
     private suspend fun getCoordinatesOfCity(city: String): List<CoordinatesOfCityResponse> {
         return WeatherApi.retrofitService.getCoordinatesOfCity(
@@ -84,9 +88,7 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
         )
     }
 
-    suspend fun insert(city: City) {
-        repository.insert(city)
-    }
+
 
     fun deleteCityFromDb(cityId: Long) {
         viewModelScope.launch {
@@ -94,6 +96,12 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
             repository.delete(city)
         }
     }
+
+    fun kelvinToCelsiusConverter(kelvinTemp): String {
+        const val KELVIN_TO_CELSIUS = 273.15
+        return "${(kelvinTemp - KELVIN_TO_CELSIUS).toUInt()} C"
+    }
+
 }
 
 class MainViewModelFactory(private val repository: CityRepository) : ViewModelProvider.Factory {
