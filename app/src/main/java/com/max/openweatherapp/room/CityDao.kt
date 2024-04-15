@@ -13,7 +13,7 @@ interface CityDao {
     suspend fun insert(city: City)
 
     @Update
-    suspend fun update(city: City)
+    suspend fun update(allCity: List<City>)
 
     @Delete
     suspend fun delete(city: City)

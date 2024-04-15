@@ -26,7 +26,6 @@ class WeatherBroadcastsAdapter(private val cityDeleteListener: (cityId:Long) -> 
 
     }
 
-
     class ViewHolder(
         private val binding: ItemWeatherBoradcastBinding
     ) : RecyclerView.ViewHolder(binding.root) {

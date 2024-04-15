@@ -9,16 +9,14 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
-import androidx.lifecycle.LifecycleCoroutineScope
 import com.max.openweatherapp.databinding.ActivityMainBinding
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.max.openweatherapp.adapters.WeatherBroadcastsAdapter
-import com.max.openweatherapp.room.CityDatabase
-import com.max.openweatherapp.room.CityRepository
+
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -60,9 +58,10 @@ class MainActivity : AppCompatActivity() {
     private fun renderState() {
         lifecycleScope.launch(Dispatchers.Main) {
             viewModel.uiState.collect { state ->
-                adapter.submuitList(state.allCity)
-                if(state.errorMessage? != null)
-                    val toast = Toast.makeText(context, state.errorMessage).show()
+                adapter.submitList(state.allCity)
+                //if(state.errorMessage? != null)run {
+                //val toast = Toast.makeText(context, state.errorMessage,).show()
+            }
         // удалить, если то, что выше, заработает
         //viewModel.uiState.observe(this) { city ->
         //    city.let { adapter.submitList(it) }
@@ -72,7 +71,8 @@ class MainActivity : AppCompatActivity() {
     private fun initListeners() {
         binding.swipeRefresh.setOnRefreshListener {
             Log.e("!!!", "onRefresh called from SwipeRefreshLayout")
-            //viewModel.updateWeatherBroadcast()
+            viewModel.updateWeatherBroadcast()
+            binding.swipeRefresh.isRefreshing = false
         }
     }
 

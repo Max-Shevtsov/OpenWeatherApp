@@ -17,8 +17,8 @@ class CityRepository(private  val cityDao: CityDao) {
         cityDao.delete(city)
     }
 
-    suspend fun update(city:City) {
-        cityDao.insert(city)
+    suspend fun update(allCity:List<City>) {
+        cityDao.update(allCity)
     }
 
     suspend fun getCityById(cityId: Long): City {

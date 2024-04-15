@@ -25,6 +25,15 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
         MutableStateFlow(MainActivityUiState())
     val uiState: StateFlow<MainActivityUiState> = _uiState.asStateFlow()
 
+    init {
+        viewModelScope.launch(Dispatchers.IO) {
+            val allCity = repository.allCity()
+            _uiState.update {
+                it.copy(allCity = allCity)
+            }
+        }
+    }
+
     fun getWeatherBroadcast(city: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -40,7 +49,7 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
 
                 Log.e("!!!", "City`s: $city")
 
-                viewModelScope.launch {
+                viewModelScope.launch(Dispatchers.Default) {
                     val cityIntoDb = City(
                         cityName = city,
                         cityLat = coordinates.first().lat,
@@ -55,7 +64,7 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
                         it.copy(allCity = allCity)
                     }
                 }
-            } catch (e:IOException) {
+            } catch (e: IOException) {
                 _uiState.update {
                     val message = e.message
                     it.copy(errorMessage = message)
@@ -65,7 +74,7 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
     }
 
     fun updateWeatherBroadcast() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.Default) {
             val allCity = repository.allCity()
             allCity.forEach { city ->
                 val result = WeatherApi.retrofitService.getBroadcast(city.cityLat, city.cityLon)
@@ -73,8 +82,9 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
                 city.cityTemp = kelvinToCelsiusConverter(result.weatherParamsResponse.temp)
                 city.cityWindSpeed = "${result.windResponse.speed} М/С"
 
-                repository.update(city)
             }
+            repository.update(allCity)
+
             _uiState.update {
                 it.copy(allCity = allCity)
 
@@ -89,9 +99,13 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
     }
 
     fun deleteCityFromDb(cityId: Long) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.Default) {
             val city = repository.getCityById((cityId))
             repository.delete(city)
+            val allCity = repository.allCity()
+            _uiState.update {
+                it.copy(allCity = allCity)
+            }
         }
     }
 
