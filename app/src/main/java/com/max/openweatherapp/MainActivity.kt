@@ -35,6 +35,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.e("!!!", "onCreate: $this")
 
         viewBinding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
@@ -85,10 +86,18 @@ class MainActivity : AppCompatActivity() {
         val searchableInfo = searchManager.getSearchableInfo(component)
         searchView.setSearchableInfo(searchableInfo)
 
-        if (Intent.ACTION_SEARCH == intent.action) {
-            intent.getStringExtra(SearchManager.QUERY)?.also { query ->
-                viewModel.getWeatherBroadcast(query)
+        try {
+            if (Intent.ACTION_SEARCH == intent.action) {
+                intent.getStringExtra(SearchManager.QUERY)?.also { query ->
+                    if (query.isNullOrEmpty()) {
+                        Log.e("!!!", "e: isNullOrEmpty")
+                    } else {
+                        viewModel.getWeatherBroadcast(query)
+                    }
+                }
             }
+        } catch (e: Throwable) {
+            Log.e("!!!", "e: $e")
         }
         return super.onCreateOptionsMenu(menu)
     }
