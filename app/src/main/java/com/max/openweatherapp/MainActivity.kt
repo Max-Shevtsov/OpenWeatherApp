@@ -58,6 +58,8 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch(Dispatchers.Main) {
             viewModel.uiState.collect { state ->
                 adapter.submitList(state.allCity)
+                if (!state.isLoading)
+                    binding.swipeRefresh.isRefreshing = false
                 //if(state.errorMessage? != null)run {
                 //val toast = Toast.makeText(context, state.errorMessage,).show()
             }
@@ -67,9 +69,8 @@ class MainActivity : AppCompatActivity() {
     private fun initListeners() {
         binding.swipeRefresh.setOnRefreshListener {
             Log.e("!!!", "onRefresh called from SwipeRefreshLayout")
-            var weatherBroadcastUpdated = viewModel.updateWeatherBroadcast()
-            if (weatherBroadcastUpdated)
-                binding.swipeRefresh.isRefreshing = false
+            viewModel.updateWeatherBroadcast()
+            
         }
     }
 
