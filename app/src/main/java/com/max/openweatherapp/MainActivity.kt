@@ -16,7 +16,6 @@ import com.max.openweatherapp.databinding.ActivityMainBinding
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.max.openweatherapp.adapters.WeatherBroadcastsAdapter
-
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -55,7 +54,6 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    @SuppressLint("StringFormatMatches")
     private fun renderState() {
         lifecycleScope.launch(Dispatchers.Main) {
             viewModel.uiState.collect { state ->
@@ -63,17 +61,15 @@ class MainActivity : AppCompatActivity() {
                 //if(state.errorMessage? != null)run {
                 //val toast = Toast.makeText(context, state.errorMessage,).show()
             }
-        // удалить, если то, что выше, заработает
-        //viewModel.uiState.observe(this) { city ->
-        //    city.let { adapter.submitList(it) }
         }
     }
 
     private fun initListeners() {
         binding.swipeRefresh.setOnRefreshListener {
             Log.e("!!!", "onRefresh called from SwipeRefreshLayout")
-            viewModel.updateWeatherBroadcast()
-            binding.swipeRefresh.isRefreshing = false
+            var weatherBroadcastUpdated = viewModel.updateWeatherBroadcast()
+            if (weatherBroadcastUpdated)
+                binding.swipeRefresh.isRefreshing = false
         }
     }
 

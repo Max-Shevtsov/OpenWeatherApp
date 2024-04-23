@@ -26,12 +26,7 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
     val uiState: StateFlow<MainActivityUiState> = _uiState.asStateFlow()
 
     init {
-        viewModelScope.launch(Dispatchers.IO) {
-            val allCity = repository.allCity()
-            _uiState.update {
-                it.copy(allCity = allCity)
-            }
-        }
+        updateWeatherBroadcast()
     }
 
     fun getWeatherBroadcast(city: String) {
@@ -49,19 +44,17 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
 
                 Log.e("!!!", "City`s: $city")
 
-                viewModelScope.launch(Dispatchers.Default) {
-                    val cityIntoDb = City(
-                        cityName = city,
-                        cityLat = coordinates.first().lat,
-                        cityLon = coordinates.first().lon,
-                        cityTemp = kelvinToCelsiusConverter(result.weatherParamsResponse.temp),
-                        cityWindSpeed = "${result.windResponse.speed} М/С",
-                    )
+                val cityIntoDb = City(
+                    cityName = city,
+                    cityLat = coordinates.first().lat,
+                    cityLon = coordinates.first().lon,
+                    cityTemp = kelvinToCelsiusConverter(result.weatherParamsResponse.temp),
+                    cityWindSpeed = "${result.windResponse.speed} М/С",
+                )
 
-                    repository.insert(cityIntoDb)
-                    _uiState.update {
-                        it.copy(allCity = it.allCity.toMutableList().apply { add(cityIntoDb) }.toList())
-                    }
+                repository.insert(cityIntoDb)
+                _uiState.update {
+                    it.copy(allCity = it.allCity.toMutableList().apply { add(cityIntoDb) }.toList())
                 }
             } catch (e: IOException) {
                 _uiState.update {
@@ -72,24 +65,34 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
         }
     }
 
-    fun updateWeatherBroadcast() {
+    fun updateWeatherBroadcast(): Boolean {
         viewModelScope.launch(Dispatchers.Default) {
             val allCity = repository.allCity()
             val updatedCities = mutableListOf<City>()
+            try{
+                allCity.forEach { city ->
+                    val result = WeatherApi.retrofitService.getBroadcast(city.cityLat, city.cityLon)
+                    val updatedCity = city.copy(
+                        cityTemp = kelvinToCelsiusConverter(result.weatherParamsResponse.temp),
+                        cityWindSpeed = "${result.windResponse.speed} М/С",
+                    )
+                    updatedCities.add(updatedCity)
+                }
 
-            allCity.forEach { city ->
-                val result = WeatherApi.retrofitService.getBroadcast(city.cityLat, city.cityLon)
-                val updatedCity = city.copy(
-                    cityTemp = kelvinToCelsiusConverter(result.weatherParamsResponse.temp),
-                    cityWindSpeed = "${result.windResponse.speed} М/С",
-                )
-                updatedCities.add(updatedCity)
-            }
-            repository.update(updatedCities)
+                repository.update(updatedCities)
 
-            _uiState.update {
-                it.copy(allCity = updatedCities)
+                _uiState.update {
+                    it.copy(allCity = updatedCities)
+                }
+
+                var weatherBroadcastUpdated = true
+            } catch (e: IOException) {
+                weatherBroadcastUpdated = false
             }
+            
+            
+
+            return weatherBroadcastUpdated
         }
     }
 
