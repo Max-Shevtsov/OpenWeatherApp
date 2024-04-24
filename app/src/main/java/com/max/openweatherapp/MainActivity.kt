@@ -46,6 +46,20 @@ class MainActivity : AppCompatActivity() {
         val recyclerView = binding.recyclerView
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this)
+        val intent = intent
+        try {
+            if (Intent.ACTION_SEARCH == intent.action) {
+                intent.getStringExtra(SearchManager.QUERY)?.also { query ->
+                    if (query.isNullOrEmpty()) {
+                        Log.e("!!!", "e: isNullOrEmpty")
+                    } else {
+                        viewModel.getWeatherBroadcast(query)
+                    }
+                }
+            }
+        } catch (e: Throwable) {
+            Log.e("!!!", "e: $e")
+        }
 
         setContentView(view)
         setSupportActionBar(binding.toolBar)
@@ -83,19 +97,7 @@ class MainActivity : AppCompatActivity() {
         val searchableInfo = searchManager.getSearchableInfo(component)
         searchView.setSearchableInfo(searchableInfo)
 
-        try {
-            if (Intent.ACTION_SEARCH == intent.action) {
-                intent.getStringExtra(SearchManager.QUERY)?.also { query ->
-                    if (query.isNullOrEmpty()) {
-                        Log.e("!!!", "e: isNullOrEmpty")
-                    } else {
-                        viewModel.getWeatherBroadcast(query)
-                    }
-                }
-            }
-        } catch (e: Throwable) {
-            Log.e("!!!", "e: $e")
-        }
+
         return super.onCreateOptionsMenu(menu)
     }
 

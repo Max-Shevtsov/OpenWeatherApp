@@ -26,7 +26,8 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
     val uiState: StateFlow<MainActivityUiState> = _uiState.asStateFlow()
 
     init {
-        updateWeatherBroadcast()
+       Log.e("!!!", "run Init")
+       // updateWeatherBroadcast()
     }
 
     fun getWeatherBroadcast(city: String) {
@@ -53,8 +54,9 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
                 )
 
                 repository.insert(cityIntoDb)
+                val cities = repository.allCity()
                 _uiState.update {
-                    it.copy(allCity = it.allCity.toMutableList().apply { add(cityIntoDb) }.toList())
+                    it.copy(allCity = cities)
                 }
             } catch (e: IOException) {
                 _uiState.update {
@@ -65,8 +67,8 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
         }
     }
 
-    fun updateWeatherBroadcast(): Boolean {
-        viewModelScope.launch(Dispatchers.Default) {
+    fun updateWeatherBroadcast() {
+        viewModelScope.launch(Dispatchers.IO) {
             val allCity = repository.allCity()
             val updatedCities = mutableListOf<City>()
         

@@ -34,8 +34,8 @@ class WeatherBroadcastsAdapter(private val cityDeleteListener: (cityId:Long) -> 
         fun bind(city: City, cityDeleteListener: (cityId: Long) -> Unit) {
             with(binding) {
                 itemCityName.text = city.cityName
-                itemCityTemp.text = city.cityTemp.toString()
-                itemCityWindSpeed.text = city.cityWindSpeed.toString()
+                itemCityTemp.text = city.cityTemp
+                itemCityWindSpeed.text = city.cityWindSpeed
                 itemDeleteButton.setOnClickListener { cityDeleteListener(city.cityId)
 
                 }
