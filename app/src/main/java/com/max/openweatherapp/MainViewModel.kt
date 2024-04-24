@@ -27,7 +27,7 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
 
     init {
        Log.e("!!!", "run Init")
-       // updateWeatherBroadcast()
+       updateWeatherBroadcast()
     }
 
     fun getWeatherBroadcast(city: String) {
