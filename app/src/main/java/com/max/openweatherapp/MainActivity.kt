@@ -47,26 +47,29 @@ class MainActivity : AppCompatActivity() {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this)
         val intent = intent
-        try {
-            if (Intent.ACTION_SEARCH == intent.action) {
-                intent.getStringExtra(SearchManager.QUERY)?.also { query ->
-                    if (query.isNullOrEmpty()) {
-                        Log.e("!!!", "e: isNullOrEmpty")
-                    } else {
-                        viewModel.getWeatherBroadcast(query)
-                    }
                 }
-            }
-        } catch (e: Throwable) {
-            Log.e("!!!", "e: $e")
-        }
 
         setContentView(view)
         setSupportActionBar(binding.toolBar)
+        handleIntent(intent)
         initListeners()
         renderState()
 
     }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        handleIntent(intent)
+    }
+
+    private fun handleIntent(intent:Intent) {
+        
+        if (Intent.ACTION_SEARCH == intent.action) {
+            intent.getStringExtra(SearchManager.QUERY)?.also { query ->
+                viewModel.getWeatherBroadcast(query)
+                }
+            }
+        } 
 
     private fun renderState() {
         lifecycleScope.launch(Dispatchers.Main) {
