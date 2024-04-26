@@ -1,19 +1,35 @@
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
+import com.max.openweatherapp.MainViewModel
+import com.max.openweatherapp.R
+import com.max.openweatherapp.databinding.WeatherFragmentBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+
+
+
 class WeatherFragment: Fragment(R.layout.weather_fragment) {
     
-    private val _binding: ActivityMainBinding? = null
+    private var _binding: WeatherFragmentBinding? = null
     private val binding get() = _binding!!
 
+    //private val viewModel: MainViewModel by activityViewModels()
 
     override fun onCreateView(
-        inflater: layoutInflater, 
+        inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
         ): View? {
-            _binding = ActivityMainBinding.inflate(inflater, container, false)
+            _binding = WeatherFragmentBinding.inflate(inflater, container, false)
             val view = binding.root
             
             initListeners()
-            renderState()
+            //renderState()
 
             return view
         }
@@ -22,28 +38,20 @@ class WeatherFragment: Fragment(R.layout.weather_fragment) {
     
     }
 
-    private fun renderState() {
-        lifecycleScope.launch(Dispatchers.Main) {
-            viewModel.uiState.collect { state ->
-                //добавить поля для state полный прогноз погоды
-                if (!state.isLoading)
-                    binding.swipeRefresh.isRefreshing = false
-                if(state.errorMessage? != null)run {
-                    val toast = Toast.makeText(context, state.errorMessage,).show()
-                }
-            }
-        }
-    }
+//    private fun renderState() {
+//        lifecycleScope.launch(Dispatchers.Main) {
+//            viewModel.uiState.collect { state ->
+//                //добавить поля для state полный прогноз погоды
+//
+//            }
+//        }
+//    }
 
     private fun initListeners() {
-        binding.swipeRefresh.setOnRefreshListener {
-            Log.e("!!!", "onRefresh called from SwipeRefreshLayout")
-            viewModel.updateWeatherBroadcast() 
-            
-        }
+
     }
 
-    overrid fun onDestroyView() {
+    override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
