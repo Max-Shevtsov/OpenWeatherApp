@@ -1,6 +1,6 @@
 class FavoritesFragment: Fragment(R.layout.favorites_fragment) {
     
-    private val _binding: FavoritesFragmentBinding? = null
+    private val _binding: ActivityMainBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -8,7 +8,7 @@ class FavoritesFragment: Fragment(R.layout.favorites_fragment) {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
         ): View? {
-            _binding = FavoritesFragmentBinding.inflate(inflater, container, false)
+            _binding = ActivityMainBinding.inflate(inflater, container, false)
             val view = binding.root
             return view
         }
