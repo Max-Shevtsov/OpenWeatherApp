@@ -61,6 +61,7 @@ class MainActivity : AppCompatActivity() {
         if (Intent.ACTION_SEARCH == intent.action) {
             intent.getStringExtra(SearchManager.QUERY)?.also { query ->
                 viewModel.getWeatherBroadcast(query)
+                // добавить навигацию к weatherFragment?
                 }
             }
         } 
@@ -72,7 +73,7 @@ class MainActivity : AppCompatActivity() {
                     //nav to favorites_fragment
                     true
                 }
-                else 0> false
+                else -> false
             }
         }
     }
