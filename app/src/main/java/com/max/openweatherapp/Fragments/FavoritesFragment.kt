@@ -37,8 +37,9 @@ class FavoritesFragment: Fragment(R.layout.favorites_fragment) {
                 adapter.submitList(state.allCity)
                 if (!state.isLoading)
                     binding.swipeRefresh.isRefreshing = false
-                //if(state.errorMessage? != null)run {
-                //val toast = Toast.makeText(context, state.errorMessage,).show()
+                if(state.errorMessage? != null)run {
+                    val toast = Toast.makeText(context, state.errorMessage,).show()
+                }
             }
         }
     }
