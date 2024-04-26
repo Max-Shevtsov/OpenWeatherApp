@@ -39,7 +39,11 @@ class MainActivity : AppCompatActivity() {
         viewBinding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         val intent = intent
-        
+
+        supportfragmentManager.beginTransation()
+            .replace(r.id.fragment_container_view, Fragment())
+            .commit()
+
         setContentView(view)
         setSupportActionBar(binding.toolBar)
         handleIntent(intent)
