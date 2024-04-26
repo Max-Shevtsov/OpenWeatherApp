@@ -13,7 +13,7 @@ interface CityDao {
     suspend fun insert(city: City)
 
     @Update
-    suspend fun update(city: City)
+    suspend fun update(allCity: List<City>)
 
     @Delete
     suspend fun delete(city: City)
@@ -22,7 +22,7 @@ interface CityDao {
     suspend fun getCityById(cityId: Long): City
 
     @Query("SELECT * FROM city_table ORDER BY city_name ASC")
-    fun getAlphabetizedCity(): Flow<List<City>>
+    fun getAlphabetizedCity(): List<City>
 
     @Query("DELETE FROM city_table")
     suspend fun deleteAll()

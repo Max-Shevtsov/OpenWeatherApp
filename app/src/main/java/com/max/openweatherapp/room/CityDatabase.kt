@@ -17,10 +17,7 @@ abstract class CityDatabase : RoomDatabase() {
     companion object {
         @Volatile
         private var INSTANCE: CityDatabase? = null
-        fun getInstance(
-            context: Context,
-            scope: CoroutineScope
-        ): CityDatabase {
+        fun getInstance(context: Context): CityDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
@@ -28,32 +25,11 @@ abstract class CityDatabase : RoomDatabase() {
                     "city_database"
                 )
                     .fallbackToDestructiveMigration()
-                    .addCallback(CityDatabaseCallback(scope))
                     .build()
                 Log.e("!!!", "Database created")
                 INSTANCE = instance
                 instance
             }
-        }
-
-        private class CityDatabaseCallback(
-            private val scope: CoroutineScope
-        ) : Callback() {
-            //            override fun onCreate(db: SupportSQLiteDatabase) {
-//                super.onCreate(db)
-            override fun onCreate(db: SupportSQLiteDatabase) {
-                super.onOpen(db)
-                INSTANCE?.let { cityDatabase ->
-                    scope.launch(Dispatchers.IO) {
-                        populateDatabase(cityDatabase.cityDao)
-                    }
-                }
-            }
-        }
-
-        suspend fun populateDatabase(cityDao: CityDao) {
-            cityDao.deleteAll()
-            Log.e("!!!", "all City`s deleted")
         }
     }
 }

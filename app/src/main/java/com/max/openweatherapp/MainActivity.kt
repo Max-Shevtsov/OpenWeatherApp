@@ -9,16 +9,13 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
-import androidx.lifecycle.LifecycleCoroutineScope
 import com.max.openweatherapp.databinding.ActivityMainBinding
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.max.openweatherapp.adapters.WeatherBroadcastsAdapter
-import com.max.openweatherapp.room.CityDatabase
-import com.max.openweatherapp.room.CityRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -37,6 +34,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.e("!!!", "onCreate: $this")
 
         viewBinding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
@@ -48,25 +46,48 @@ class MainActivity : AppCompatActivity() {
         val recyclerView = binding.recyclerView
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this)
+        val intent = intent
+                }
 
         setContentView(view)
         setSupportActionBar(binding.toolBar)
+        handleIntent(intent)
         initListeners()
         renderState()
 
     }
 
-    @SuppressLint("StringFormatMatches")
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        handleIntent(intent)
+    }
+
+    private fun handleIntent(intent:Intent) {
+        
+        if (Intent.ACTION_SEARCH == intent.action) {
+            intent.getStringExtra(SearchManager.QUERY)?.also { query ->
+                viewModel.getWeatherBroadcast(query)
+                }
+            }
+        } 
+
     private fun renderState() {
-        viewModel.uiState.observe(this) { city ->
-            city.let { adapter.submitList(it) }
+        lifecycleScope.launch(Dispatchers.Main) {
+            viewModel.uiState.collect { state ->
+                adapter.submitList(state.allCity)
+                if (!state.isLoading)
+                    binding.swipeRefresh.isRefreshing = false
+                //if(state.errorMessage? != null)run {
+                //val toast = Toast.makeText(context, state.errorMessage,).show()
+            }
         }
     }
 
     private fun initListeners() {
         binding.swipeRefresh.setOnRefreshListener {
             Log.e("!!!", "onRefresh called from SwipeRefreshLayout")
-            //viewModel.updateWeatherBroadcast()
+            viewModel.updateWeatherBroadcast()
+            
         }
     }
 
@@ -79,11 +100,7 @@ class MainActivity : AppCompatActivity() {
         val searchableInfo = searchManager.getSearchableInfo(component)
         searchView.setSearchableInfo(searchableInfo)
 
-        if (Intent.ACTION_SEARCH == intent.action) {
-            intent.getStringExtra(SearchManager.QUERY)?.also { query ->
-                viewModel.getWeatherBroadcast(query)
-            }
-        }
+
         return super.onCreateOptionsMenu(menu)
     }
 
