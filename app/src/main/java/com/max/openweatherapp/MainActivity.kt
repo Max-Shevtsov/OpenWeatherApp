@@ -44,6 +44,7 @@ class MainActivity : AppCompatActivity() {
             .commit()
 
         setContentView(view)
+        setHasOptinsMenu(true)
         setSupportActionBar(binding.toolBar)
         handleIntent(intent)
         
@@ -64,7 +65,17 @@ class MainActivity : AppCompatActivity() {
             }
         } 
 
-    
+    private fun initListeners() {
+        binding.toolBar.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.action_favorites ->{
+                    //nav to favorites_fragment
+                    true
+                }
+                else 0> false
+            }
+        }
+    }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.options_menu, menu)
