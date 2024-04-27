@@ -69,7 +69,6 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
                     it.copy(city = city)
                 }
 
-                return city
             } catch (e: IOException) {
                 _weatherUiState.update {
                     val message = e.message
