@@ -21,9 +21,19 @@ import java.lang.IllegalArgumentException
 
 class MainViewModel(private val repository: CityRepository) : ViewModel() {
 
-    private val _uiState: MutableStateFlow<MainActivityUiState> =
-        MutableStateFlow(MainActivityUiState())
-    val uiState: StateFlow<MainActivityUiState> = _uiState.asStateFlow()
+    //private val _uiState: MutableStateFlow<MainActivityUiState> =
+    //    MutableStateFlow(MainActivityUiState())
+    //val uiState: StateFlow<MainActivityUiState> = _uiState.asStateFlow()
+
+    private val _favoritesUiState: MutableStateFlow<FavoritesUiState> =
+        MutableStateFlow(FavoritesUiState())
+    val favoritesUiState: StateFlow<FavoritesUiState> = _uiState.asStateFlow()
+
+    private val _weatherUiState: MutableStateFlow<WeatherUiState> =
+        MutableStateFlow(FavoritesUiState())
+    val weatherUiState: StateFlow<WeatherUiState> = _uiState.asStateFlow()
+
+    private val currentWeather:City = City()
 
     init {
        Log.e("!!!", "run Init")
@@ -45,15 +55,34 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
 
                 Log.e("!!!", "City`s: $city")
 
-                val cityIntoDb = City(
+                val city = City(
                     cityName = city,
                     cityLat = coordinates.first().lat,
                     cityLon = coordinates.first().lon,
                     cityTemp = kelvinToCelsiusConverter(result.weatherParamsResponse.temp),
                     cityWindSpeed = "${result.windResponse.speed} М/С",
                 )
+                
+                currentWeather = city
+                
+                _weatherUiState.update {
+                    it.copy(city = city)
+                }
 
-                repository.insert(cityIntoDb)
+                return city
+            } catch (e: IOException) {
+                _uiState.update {
+                    val message = e.message
+                    it.copy(errorMessage = message)
+                }
+            }
+        }
+    }
+
+    fun putCityIntofavorites() {
+        viewModelScope.launch(Dispatchers.Default) {
+            try {
+                repository.insert(currentWeather)
                 val cities = repository.allCity()
                 _uiState.update {
                     it.copy(allCity = cities)
