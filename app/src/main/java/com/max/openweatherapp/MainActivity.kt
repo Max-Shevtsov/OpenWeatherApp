@@ -67,13 +67,16 @@ class MainActivity : AppCompatActivity() {
             intent.getStringExtra(SearchManager.QUERY)?.also { query ->
                 viewModel.getWeatherBroadcast(query)
                 // добавить навигацию к weatherFragment?
+                supportFragmentManager.commit {
+                    replace<WeatherFragment>(R.id.fragment_container_view)
+                }
             }
         }
     }
 
     private fun initListeners() {
-        binding.toolBar.setOnMenuItemClickListener {
-            when (it.itemId) {
+        binding.toolBar.setOnMenuItemClickListener {MenuItem
+            when (MenuItem.itemId) {
                 R.id.action_favorites -> {
                     //nav to favorites_fragment
                     supportFragmentManager.commit {
@@ -99,19 +102,4 @@ class MainActivity : AppCompatActivity() {
 
         return super.onCreateOptionsMenu(menu)
     }
-
-//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-//        return super.onOptionsItemSelected(item)
-//        when (item.itemId) {
-//            R.id.action_favorites ->{
-//                //nav to favorites_fragment
-//                supportFragmentManager.commit {
-//                    add<FavoritesFragment>(R.id.fragment_container_view)
-//                }
-//                true
-//            }
-//            else -> false
-//        }
-
-
 }

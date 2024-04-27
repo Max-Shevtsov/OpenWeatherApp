@@ -9,17 +9,28 @@
     
     android:orientation="vertical">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolBar"
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-        
+        android:layout_height="wrap_content">
+
+        <com.google.amdroid.material.appbar.MaterialToolbar
+            android:id="@+id/toolBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="?attr/actionBarSize"
+            app:title="@string/app_name"
+            app:menu="@menu/options_menu"
+            app:navigationIcon="@drawable/ic_clos_24dp"/>
+
+    <com.google.android.material.appbar.AppBarLayout/>    
+    
     <FrameLayout
         android:id="@+id/fragment_container_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".mainActivity">
     </FrameLayout>
+    
 </LinearLayout>
 
 
