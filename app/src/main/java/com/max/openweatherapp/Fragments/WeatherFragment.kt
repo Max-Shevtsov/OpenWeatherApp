@@ -29,7 +29,7 @@ class WeatherFragment: Fragment(R.layout.weather_fragment) {
         ): View? {
             _binding = WeatherFragmentBinding.inflate(inflater, container, false)
             val view = binding.root
-            
+           
             initListeners()
             //renderState()
 
@@ -40,17 +40,21 @@ class WeatherFragment: Fragment(R.layout.weather_fragment) {
     
     }
 
-//    private fun renderState() {
-//        lifecycleScope.launch(Dispatchers.Main) {
-//            viewModel.uiState.collect { state ->
-//                //добавить поля для state полный прогноз погоды
-//
-//            }
-//        }
-//    }
+    private fun renderState() {
+        lifecycleScope.launch(Dispatchers.Main) {
+            viewModel.weatherUiState.colect{state ->
+                //добавить поля для state полный прогноз погоды
+                binding.itemCityName = state.city.cityName
+                binding.itemCityTemp = state.city.cityTemp
+                binding.itemCityWindSpeed = state.city.cityWindSpeed
+            }
+                
+
+        }
+    }
 
     private fun initListeners() {
-
+// onClickListener {viewModel.putCityIntofavorites(city)}
     }
 
     override fun onDestroyView() {
