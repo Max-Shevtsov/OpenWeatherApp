@@ -117,13 +117,16 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
         return "${(kelvinTemp - KELVIN_TO_CELSIUS).toUInt()} C"
     }
 }
+companion object{
+    val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
 
-class MainViewModelFactory(private val repository: CityRepository) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
-            return MainViewModel(repository) as T
+            if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
+                return MainViewModel(repository) as T
+            }
+            throw IllegalArgumentException("Unknown ViewModel")
         }
-        throw IllegalArgumentException("Unknown ViewModel")
+        
     }
 }
 
