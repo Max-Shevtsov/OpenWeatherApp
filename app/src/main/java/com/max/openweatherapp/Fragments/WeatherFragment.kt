@@ -19,7 +19,7 @@ class WeatherFragment: Fragment(R.layout.weather_fragment) {
     private val binding get() = _binding!!
 
     private val viewModel: MainViewModel by activityViewModels{
-        MainViewModelFactory((application as CityApplication).repository)
+        MainViewModelFactory(MainViewModel.Factory)
     }
 
     override fun onCreateView(
