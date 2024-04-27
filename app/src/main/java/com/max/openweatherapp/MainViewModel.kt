@@ -33,7 +33,7 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
         MutableStateFlow(FavoritesUiState())
     val weatherUiState: StateFlow<WeatherUiState> = _uiState.asStateFlow()
 
-    private val currentWeather:City = City()
+    private val currentCity:City = City()
 
     init {
        Log.e("!!!", "run Init")
@@ -71,7 +71,7 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
 
                 return city
             } catch (e: IOException) {
-                _uiState.update {
+                _weatherUiState.update {
                     val message = e.message
                     it.copy(errorMessage = message)
                 }
@@ -82,13 +82,13 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
     fun putCityIntofavorites() {
         viewModelScope.launch(Dispatchers.Default) {
             try {
-                repository.insert(currentWeather)
+                repository.insert(currentCity)
                 val cities = repository.allCity()
-                _uiState.update {
+                _favoritesUiState.update {
                     it.copy(allCity = cities)
                 }
             } catch (e: IOException) {
-                _uiState.update {
+                _favoritesUiState.update {
                     val message = e.message
                     it.copy(errorMessage = message)
                 }
@@ -100,27 +100,33 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             val allCity = repository.allCity()
             val updatedCities = mutableListOf<City>()
-        
-            allCity.forEach { city ->
-                _uiState.update {
-                    it.copy(isLoading = true)
+            try{
+                allCity.forEach { city ->
+                    _favoritesUiState.update {
+                        it.copy(isLoading = true)
+                    }
+                    val result = WeatherApi.retrofitService.getBroadcast(city.cityLat, city.cityLon)
+                        val updatedCity = city.copy(
+                            cityTemp = kelvinToCelsiusConverter(result.weatherParamsResponse.temp),
+                            cityWindSpeed = "${result.windResponse.speed} М/С",
+                        )
+                        updatedCities.add(updatedCity)
+                    }
+    
+                    repository.update(updatedCities)
+    
+                    _favoritesUiState.update {
+                        it.copy(
+                            allCity = updatedCities,
+                            isLoading = false
+                        )
                 }
-                val result = WeatherApi.retrofitService.getBroadcast(city.cityLat, city.cityLon)
-                    val updatedCity = city.copy(
-                        cityTemp = kelvinToCelsiusConverter(result.weatherParamsResponse.temp),
-                        cityWindSpeed = "${result.windResponse.speed} М/С",
-                    )
-                    updatedCities.add(updatedCity)
+            } catch (e: IOException) {
+                _favoritesUiState.update {
+                    val message = e.message
+                    it.copy(errorMessage = message)
                 }
-
-                repository.update(updatedCities)
-
-                _uiState.update {
-                    it.copy(
-                        allCity = updatedCities,
-                        isLoading = false
-                    )
-            }
+            } 
         }
     }
 
@@ -135,7 +141,7 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
             val city = repository.getCityById((cityId))
             repository.delete(city)
             val allCity = repository.allCity()
-            _uiState.update {
+            _favoritesUiState.update {
                 it.copy(allCity = allCity)
             }
         }
