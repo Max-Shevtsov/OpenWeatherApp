@@ -18,7 +18,9 @@ class WeatherFragment: Fragment(R.layout.weather_fragment) {
     private var _binding: WeatherFragmentBinding? = null
     private val binding get() = _binding!!
 
-    //private val viewModel: MainViewModel by activityViewModels()
+    private val viewModel: MainViewModel by activityViewModels{
+        MainViewModelFactory((application as CityApplication).repository)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,

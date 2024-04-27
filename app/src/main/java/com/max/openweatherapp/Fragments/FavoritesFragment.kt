@@ -21,7 +21,9 @@ class FavoritesFragment : Fragment(R.layout.favorites_fragment) {
 
     private lateinit var adapter: WeatherBroadcastsAdapter
 
-    private val activityViewModel: MainViewModel by activityViewModels()
+    private val activityViewModel: MainViewModel by activityViewModels{
+        MainViewModelFactory((application as CityApplication).repository)
+    }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
