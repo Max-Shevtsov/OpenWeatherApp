@@ -22,7 +22,7 @@ class FavoritesFragment : Fragment(R.layout.favorites_fragment) {
     private lateinit var adapter: WeatherBroadcastsAdapter
 
     private val activityViewModel: MainViewModel by activityViewModels{
-        MainViewModelFactory(MainViewModel.Factory)
+        MainViewModel.Factory
     }
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -52,7 +52,7 @@ class FavoritesFragment : Fragment(R.layout.favorites_fragment) {
 
     private fun renderState() {
         lifecycleScope.launch(Dispatchers.Main) {
-            activityViewModel.uiState.collect { state ->
+            activityViewModel.favoritesUiState.collect { state ->
                 adapter.submitList(state.allCity)
                 if (!state.isLoading)
                     binding.swipeRefresh.isRefreshing = false

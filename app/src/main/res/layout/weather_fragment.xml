@@ -7,7 +7,7 @@
     
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/itemCityName"
+        android:id="@+id/cityName"
         android:hint="City"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -15,23 +15,23 @@
         app:layout_constraintTop_toTopOf="parent"/>
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/itemCityTemp"
+        android:id="@+id/cityTemp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
         android:hint="temperature"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/itemCityName" />
+        app:layout_constraintTop_toBottomOf="@+id/cityName" />
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/itemCityWindSpeed"
+        android:id="@+id/cityWindSpeed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="84dp"
         android:layout_marginTop="50dp"
         android:hint="wind"
-        app:layout_constraintStart_toEndOf="@id/itemCityTemp"
-        app:layout_constraintTop_toBottomOf="@+id/itemCityName" />
+        app:layout_constraintStart_toEndOf="@id/cityTemp"
+        app:layout_constraintTop_toBottomOf="@+id/cityName" />
     <com.google.android.material.button.MaterialButton
         android:id="@+id/itemDeleteButton"
         android:layout_width="wrap_content"

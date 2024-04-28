@@ -4,8 +4,11 @@ package com.max.openweatherapp
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
-import com.max.openweatherapp.UI.MainActivityUiState
+import androidx.lifecycle.viewmodel.CreationExtras
+import com.max.openweatherapp.UI.FavoritesUiState
+import com.max.openweatherapp.UI.WeatherUiState
 import com.max.openweatherapp.model.CoordinatesOfCityResponse
 import com.max.openweatherapp.network.WeatherApi
 import com.max.openweatherapp.room.City
@@ -21,19 +24,15 @@ import java.lang.IllegalArgumentException
 
 class MainViewModel(private val repository: CityRepository) : ViewModel() {
 
-    //private val _uiState: MutableStateFlow<MainActivityUiState> =
-    //    MutableStateFlow(MainActivityUiState())
-    //val uiState: StateFlow<MainActivityUiState> = _uiState.asStateFlow()
-
     private val _favoritesUiState: MutableStateFlow<FavoritesUiState> =
         MutableStateFlow(FavoritesUiState())
-    val favoritesUiState: StateFlow<FavoritesUiState> = _uiState.asStateFlow()
+    val favoritesUiState: StateFlow<FavoritesUiState> = _favoritesUiState.asStateFlow()
 
     private val _weatherUiState: MutableStateFlow<WeatherUiState> =
-        MutableStateFlow(FavoritesUiState())
-    val weatherUiState: StateFlow<WeatherUiState> = _uiState.asStateFlow()
+        MutableStateFlow(WeatherUiState())
+    val weatherUiState: StateFlow<WeatherUiState> = _weatherUiState.asStateFlow()
 
-    private val currentCity:City = City()
+    private var currentCity:City = City()
 
     init {
        Log.e("!!!", "run Init")
@@ -63,8 +62,8 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
                     cityWindSpeed = "${result.windResponse.speed} М/С",
                 )
                 
-                currentWeather = city
-                
+                currentCity = city
+
                 _weatherUiState.update {
                     it.copy(city = city)
                 }
@@ -150,17 +149,20 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
         val KELVIN_TO_CELSIUS = 273.15
         return "${(kelvinTemp - KELVIN_TO_CELSIUS).toUInt()} C"
     }
-}
-companion object{
-    val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-
-            if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
-                return MainViewModel((application as CityApplication).repository) as T
+    companion object{
+        val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(
+                modelClass: Class<T>,
+                extras:CreationExtras): T {
+                if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
+                    val application = checkNotNull(extras[APPLICATION_KEY])
+                    return MainViewModel((application as CityApplication).repository) as T
+                }
+                throw IllegalArgumentException("Unknown ViewModel")
             }
-            throw IllegalArgumentException("Unknown ViewModel")
+
         }
-        
     }
 }
+
 

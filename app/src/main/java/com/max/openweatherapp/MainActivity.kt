@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
 
 
     private val viewModel: MainViewModel by viewModels {
-        MainViewModelFactory((application as CityApplication).repository)
+        MainViewModel.Factory
     }
 
 
@@ -75,8 +75,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initListeners() {
-        binding.toolBar.setOnMenuItemClickListener {MenuItem
-            when (MenuItem.itemId) {
+        binding.toolBar.setOnMenuItemClickListener {
+            when (it.itemId) {
                 R.id.action_favorites -> {
                     //nav to favorites_fragment
                     supportFragmentManager.commit {

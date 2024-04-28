@@ -19,7 +19,7 @@ class WeatherFragment: Fragment(R.layout.weather_fragment) {
     private val binding get() = _binding!!
 
     private val viewModel: MainViewModel by activityViewModels{
-        MainViewModelFactory(MainViewModel.Factory)
+        MainViewModel.Factory
     }
 
     override fun onCreateView(
@@ -31,7 +31,7 @@ class WeatherFragment: Fragment(R.layout.weather_fragment) {
             val view = binding.root
            
             initListeners()
-            //renderState()
+            renderState()
 
             return view
         }
@@ -42,11 +42,11 @@ class WeatherFragment: Fragment(R.layout.weather_fragment) {
 
     private fun renderState() {
         lifecycleScope.launch(Dispatchers.Main) {
-            viewModel.weatherUiState.colect{state ->
+            viewModel.weatherUiState.collect{state ->
                 //добавить поля для state полный прогноз погоды
-                binding.itemCityName = state.city.cityName
-                binding.itemCityTemp = state.city.cityTemp
-                binding.itemCityWindSpeed = state.city.cityWindSpeed
+                binding.cityName.text = state.city?.cityName
+                binding.cityTemp.text = state.city?.cityTemp
+                binding.cityWindSpeed.text = state.city?.cityWindSpeed
             }
                 
 
