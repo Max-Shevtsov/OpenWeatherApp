@@ -4,11 +4,12 @@ import androidx.annotation.WorkerThread
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 
-class CityRepository(private  val cityDao: CityDao) {
-    
-    suspend fun allCity(): List<City>{
-        return  cityDao.getAlphabetizedCity()
+class CityRepository(private val cityDao: CityDao) {
+
+    fun allCity(): Flow<List<City>> {
+        return cityDao.getAlphabetizedCity()
     }
+
     suspend fun insert(city: City) {
         cityDao.insert(city)
     }
@@ -17,8 +18,12 @@ class CityRepository(private  val cityDao: CityDao) {
         cityDao.delete(city)
     }
 
-    suspend fun update(allCity:List<City>) {
+    suspend fun update(allCity: List<City>) {
         cityDao.update(allCity)
+    }
+
+    suspend fun updateCity(city: City) {
+        cityDao.updateCity(city)
     }
 
     suspend fun getCityById(cityId: Long): City {

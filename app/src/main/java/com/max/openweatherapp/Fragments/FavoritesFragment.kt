@@ -66,7 +66,7 @@ class FavoritesFragment : Fragment(R.layout.favorites_fragment) {
     private fun initListeners() {
         binding.swipeRefresh.setOnRefreshListener {
             Log.e("!!!", "onRefresh called from SwipeRefreshLayout")
-            activityViewModel.updateWeatherBroadcast()
+            activityViewModel.refreshWeather()
 
         }
     }
