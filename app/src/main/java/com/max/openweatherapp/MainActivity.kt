@@ -90,6 +90,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    fun replaceWeatherFragment() {
+
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.options_menu, menu)
 

@@ -7,4 +7,5 @@ data class WeatherUiState(
     var errorMessage: String? = null,
     var isLoading: Boolean = false,
     var city: City? = null,
+    //var isStarred: Boolean = false
 )

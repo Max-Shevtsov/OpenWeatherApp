@@ -1,15 +1,12 @@
 package com.max.openweatherapp.adapters
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.max.openweatherapp.MainViewModel
 import com.max.openweatherapp.databinding.ItemWeatherBoradcastBinding
 import com.max.openweatherapp.room.City
-import com.max.openweatherapp.room.CityDatabase
 import com.max.openweatherapp.room.CityRepository
 
 class WeatherBroadcastsAdapter(private val onClick: (city:City) -> Unit ) :
@@ -23,7 +20,7 @@ class WeatherBroadcastsAdapter(private val onClick: (city:City) -> Unit ) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val city = getItem(position)
-        holder.bind(city, onCklick)
+        holder.bind(city, onClick)
 
     }
 
@@ -31,25 +28,23 @@ class WeatherBroadcastsAdapter(private val onClick: (city:City) -> Unit ) :
         private val binding: ItemWeatherBoradcastBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        private var currentCity: City? = null
 
-        init {
-            bind.root.setOnClickListener {
-                currentCity?.let {
-                    onClick(it)
-                }
-            }
-        }
+//        init {
+//            binding.root.setOnClickListener {
+//                currentCity?.let {
+//                    onClick(it)
+//                }
+//            }
+//        }
 
-        fun bind(city: City) {              //onClick: (city) -> Unit)
+        fun bind(city: City, onClick: (City)-> Unit) {              //onClick: (city) -> Unit)
             
-            currentCity = city
-            
+
             with(binding) {
                 itemCityName.text = city.cityName
                 itemCityTemp.text = city.cityTemp
                 itemCityWindSpeed.text = city.cityWindSpeed
-                //root.setOnClickListener { onClick(city)
+                root.setOnClickListener { onClick(city)
 
                 }
             }

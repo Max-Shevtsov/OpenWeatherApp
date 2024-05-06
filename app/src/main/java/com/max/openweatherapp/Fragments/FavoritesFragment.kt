@@ -1,12 +1,18 @@
 import android.os.Bundle
+import android.text.TextUtils.replace
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.commit
+import androidx.fragment.app.replace
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.max.openweatherapp.MainViewModel
 import com.max.openweatherapp.R
 import com.max.openweatherapp.adapters.WeatherBroadcastsAdapter
@@ -36,13 +42,13 @@ class FavoritesFragment : Fragment(R.layout.favorites_fragment) {
         adapter = WeatherBroadcastsAdapter { city ->
 
             activityViewModel.updateWeatherBroadcast(city)
-            supportFragmentManager.commit {
+            parentFragmentManager.commit {
                 replace<WeatherFragment>(R.id.fragment_container_view)
             }
         }
 
-        val dividerItemDecoration = DividerItemDecoration(this, RecyclerView.VERTICAL)
-        dividerItemDecoration.setDrawable(resources.gerDrawable(R.drawable.divider_drawable))
+        val dividerItemDecoration = DividerItemDecoration(context, RecyclerView.VERTICAL)
+        dividerItemDecoration.setDrawable(resources.getDrawable(R.drawable.divider_drawable))
 
         val recyclerView = binding.recyclerView
         recyclerView.adapter = adapter
@@ -78,11 +84,6 @@ class FavoritesFragment : Fragment(R.layout.favorites_fragment) {
             activityViewModel.refreshWeather()
 
         }
-    }
-
-    private fun initDecoration() {
-        
-        
     }
 
     override fun onDestroyView() {
