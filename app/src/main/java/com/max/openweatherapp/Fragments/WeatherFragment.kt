@@ -42,10 +42,10 @@ class WeatherFragment : Fragment(R.layout.weather_fragment) {
     private fun renderState() {
         lifecycleScope.launch(Dispatchers.Main) {
             viewModel.weatherUiState.collect { state ->
-                //добавить поля для state полный прогноз погоды
                 binding.cityName.text = state.city?.cityName
                 binding.cityTemp.text = state.city?.cityTemp
                 binding.cityWindSpeed.text = state.city?.cityWindSpeed
+                binding.starButton.isChecked = state.city?.isStarred ?: false
             }
 
 
@@ -53,10 +53,11 @@ class WeatherFragment : Fragment(R.layout.weather_fragment) {
     }
 
     private fun initListeners() {
-        binding.starButton.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked) {
+
+        binding.starButton.setOnClickListener {
+            if (binding.starButton.isChecked) {
                 viewModel.putCityIntoFavorites()
-            } else {
+            }else {
                 viewModel.deleteCityFromFavorites()
             }
         }

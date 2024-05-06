@@ -77,7 +77,6 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
     }
 
 
-
     fun refreshWeather() {
         viewModelScope.launch {
             _favoritesUiState.update {
@@ -142,17 +141,25 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
             city = city,
         )
     }
+
     fun putCityIntoFavorites() {
         viewModelScope.launch(Dispatchers.Default) {
-            _weatherUiState.value.city?.isStarred
             val city = (_weatherUiState.value.city) ?: return@launch
+            city.isStarred = true
+            _weatherUiState.update {
+                it.copy(
+                    city = city,
+                )
+            }
             repository.insert(city)
         }
     }
+
     fun deleteCityFromFavorites() {
         viewModelScope.launch(Dispatchers.Default) {
             //val city = _favoritesUiState.value.allCity.firstOrNull { it.cityId == currentCity.cityId } ?: return@launch
             val city = (_weatherUiState.value.city) ?: return@launch
+            city.isStarred = false
             repository.delete(city)
         }
     }
