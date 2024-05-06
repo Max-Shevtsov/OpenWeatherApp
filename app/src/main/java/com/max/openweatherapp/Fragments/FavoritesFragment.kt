@@ -24,6 +24,7 @@ class FavoritesFragment : Fragment(R.layout.favorites_fragment) {
     private val activityViewModel: MainViewModel by activityViewModels{
         MainViewModel.Factory
     }
+    
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -40,10 +41,14 @@ class FavoritesFragment : Fragment(R.layout.favorites_fragment) {
             }
         }
 
+        val dividerItemDecoration = DividerItemDecoration(this, RecyclerView.VERTICAL)
+        dividerItemDecoration.setDrawable(resources.gerDrawable(R.drawable.divider_drawable))
+
         val recyclerView = binding.recyclerView
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(context)
-
+        recyclerView.addItemDecoration(dividerItemDecoration)
+        
         initListeners()
         renderState()
 
@@ -75,7 +80,10 @@ class FavoritesFragment : Fragment(R.layout.favorites_fragment) {
         }
     }
 
-    private fun 
+    private fun initDecoration() {
+        
+        
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
