@@ -10,4 +10,8 @@ class CityApplication: Application() {
 
     val database by lazy {CityDatabase.getInstance(this)}
     val repository by lazy {CityRepository(database.cityDao)}
+
+    override fun onCreate(){
+        DynamicColors.applyToActivitiesIfAvailable(this)
+    }
 }
