@@ -33,7 +33,8 @@ class FavoritesFragment : Fragment(R.layout.favorites_fragment) {
         val view = binding.root
 
         adapter = WeatherBroadcastsAdapter { cityId ->
-            activityViewModel.deleteCityFromDb(cityId)
+
+            //activityViewModel.deleteCityFromDb(cityId)
         }
 
         val recyclerView = binding.recyclerView

@@ -1,12 +1,10 @@
 package com.max.openweatherapp.room
 
-import androidx.annotation.WorkerThread
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.asFlow
 
 class CityRepository(private val cityDao: CityDao) {
 
-    fun allCity(): Flow<List<City>> {
+    fun cities(): Flow<List<City>> {
         return cityDao.getAlphabetizedCity()
     }
 
@@ -18,8 +16,8 @@ class CityRepository(private val cityDao: CityDao) {
         cityDao.delete(city)
     }
 
-    suspend fun update(allCity: List<City>) {
-        cityDao.update(allCity)
+    suspend fun update(cities: List<City>) {
+        cityDao.update(cities)
     }
 
     suspend fun updateCity(city: City) {

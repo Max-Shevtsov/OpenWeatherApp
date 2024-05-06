@@ -13,7 +13,6 @@ import com.max.openweatherapp.model.CoordinatesOfCityResponse
 import com.max.openweatherapp.network.WeatherApi
 import com.max.openweatherapp.room.City
 import com.max.openweatherapp.room.CityRepository
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -79,18 +78,7 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
         }
     }
 
-    fun putCityIntofavorites() {
-        viewModelScope.launch(Dispatchers.Default) {
-            try {
-                val cities = repository.allCity()
-            } catch (e: IOException) {
-                _favoritesUiState.update {
-                    val message = e.message
-                    it.copy(errorMessage = message)
-                }
-            }
-        }
-    }
+
 
     fun refreshWeather() {
         viewModelScope.launch {
@@ -133,10 +121,10 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
 
     private fun updateWeatherBroadcast() {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.allCity().collect { allCity ->
+            repository.cities().collect { cities ->
                 _favoritesUiState.update {
                     it.copy(
-                        allCity = allCity,
+                        allCity = cities,
                     )
                 }
             }
@@ -148,10 +136,17 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
             city = city,
         )
     }
-
-    fun deleteCityFromDb(cityId: Long) {
+    fun putCityIntoFavorites() {
         viewModelScope.launch(Dispatchers.Default) {
-            val city = _favoritesUiState.value.allCity.firstOrNull { it.cityId == cityId } ?: return@launch
+            _weatherUiState.value.city?.isStarred
+            val city = (_weatherUiState.value.city) ?: return@launch
+            repository.insert(city)
+        }
+    }
+    fun deleteCityFromFavorites() {
+        viewModelScope.launch(Dispatchers.Default) {
+            //val city = _favoritesUiState.value.allCity.firstOrNull { it.cityId == currentCity.cityId } ?: return@launch
+            val city = (_weatherUiState.value.city) ?: return@launch
             repository.delete(city)
         }
     }

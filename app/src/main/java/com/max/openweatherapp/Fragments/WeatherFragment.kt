@@ -12,13 +12,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
+class WeatherFragment : Fragment(R.layout.weather_fragment) {
 
-class WeatherFragment: Fragment(R.layout.weather_fragment) {
-    
     private var _binding: WeatherFragmentBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: MainViewModel by activityViewModels{
+    private val viewModel: MainViewModel by activityViewModels {
         MainViewModel.Factory
     }
 
@@ -26,35 +25,41 @@ class WeatherFragment: Fragment(R.layout.weather_fragment) {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
-        ): View? {
-            _binding = WeatherFragmentBinding.inflate(inflater, container, false)
-            val view = binding.root
-           
-            initListeners()
-            renderState()
+    ): View? {
+        _binding = WeatherFragmentBinding.inflate(inflater, container, false)
+        val view = binding.root
 
-            return view
-        }
+        initListeners()
+        renderState()
+
+        return view
+    }
 
     override fun onViewCreated(view: View, sevedInstanceState: Bundle?) {
-    
+
     }
 
     private fun renderState() {
         lifecycleScope.launch(Dispatchers.Main) {
-            viewModel.weatherUiState.collect{state ->
+            viewModel.weatherUiState.collect { state ->
                 //добавить поля для state полный прогноз погоды
                 binding.cityName.text = state.city?.cityName
                 binding.cityTemp.text = state.city?.cityTemp
                 binding.cityWindSpeed.text = state.city?.cityWindSpeed
             }
-                
+
 
         }
     }
 
     private fun initListeners() {
-// onClickListener {viewModel.putCityIntofavorites(city)}
+        binding.starButton.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) {
+                viewModel.putCityIntoFavorites()
+            } else {
+                viewModel.deleteCityFromFavorites()
+            }
+        }
     }
 
     override fun onDestroyView() {
