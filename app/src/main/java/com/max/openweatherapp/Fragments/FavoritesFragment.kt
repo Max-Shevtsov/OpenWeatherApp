@@ -32,9 +32,12 @@ class FavoritesFragment : Fragment(R.layout.favorites_fragment) {
         _binding = FavoritesFragmentBinding.inflate(inflater, container, false)
         val view = binding.root
 
-        adapter = WeatherBroadcastsAdapter { cityId ->
+        adapter = WeatherBroadcastsAdapter { city ->
 
-            //activityViewModel.deleteCityFromDb(cityId)
+            activityViewModel.updateWeatherBroadcast(city)
+            supportFragmentManager.commit {
+                replace<WeatherFragment>(R.id.fragment_container_view)
+            }
         }
 
         val recyclerView = binding.recyclerView
@@ -71,6 +74,8 @@ class FavoritesFragment : Fragment(R.layout.favorites_fragment) {
 
         }
     }
+
+    private fun 
 
     override fun onDestroyView() {
         super.onDestroyView()

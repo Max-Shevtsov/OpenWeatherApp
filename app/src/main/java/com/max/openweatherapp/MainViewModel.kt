@@ -37,7 +37,7 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
 
     init {
         Log.e("!!!", "run Init")
-        updateWeatherBroadcast()
+        updateFavoritesBroadcast()
     }
 
     fun getWeatherBroadcast(city: String) {
@@ -65,9 +65,7 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
 
                 currentCity = city
 
-                _weatherUiState.update {
-                    it.copy(city = city)
-                }
+                updateWeatherBroadcast(currentCity)
 
             } catch (e: IOException) {
                 _weatherUiState.update {
@@ -119,7 +117,7 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
         }.forEach { it.await() }
     }
 
-    private fun updateWeatherBroadcast() {
+    private fun updateFavoritesBroadcast() {
         viewModelScope.launch(Dispatchers.IO) {
             repository.cities().collect { cities ->
                 _favoritesUiState.update {
@@ -127,6 +125,14 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
                         allCity = cities,
                     )
                 }
+            }
+        }
+    }
+
+    fun updateWeatherBroadcast(city: City) {
+        viewModelScope.launch {
+            _weatherUiState.update {
+                it.copy(city = city)
             }
         }
     }
@@ -150,6 +156,7 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
             repository.delete(city)
         }
     }
+
 
     private fun kelvinToCelsiusConverter(kelvinTemp: Double): String {
         val KELVIN_TO_CELSIUS = 273.15
