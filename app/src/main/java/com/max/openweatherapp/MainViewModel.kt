@@ -61,6 +61,7 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
                     cityLon = coordinates.first().lon,
                     cityTemp = kelvinToCelsiusConverter(result.weatherParamsResponse.temp),
                     cityWindSpeed = "${result.windResponse.speed} М/С",
+                    cityWeatherType = result.weatherTypeInformation.weatherType
                 )
 
                 currentCity = city
