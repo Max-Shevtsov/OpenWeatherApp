@@ -165,6 +165,12 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
         }
     }
 
+    fun getWeatherTypeImage(url:String, imageView: ImageView) {
+        Glide
+                .with(this)
+                .load(url)
+                .into(imageView)
+    }
 
     private fun kelvinToCelsiusConverter(kelvinTemp: Double): String {
         val KELVIN_TO_CELSIUS = 273.15

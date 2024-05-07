@@ -62,6 +62,24 @@ class WeatherFragment : Fragment(R.layout.weather_fragment) {
             }
         }
     }
+// перенести все из фрагмента во вьюмодель?
+    private fun weatherTypeListener() {
+        val weatherType = WeatherType()
+        when (weatherUiState.city.cityWeatherType) {
+            weatherType.CLEAR_SKY -> url = "https://openweathermap.org/img/wn/01d@2x.png",
+            weatherType.FEW_CLOUDS -> url = "https://openweathermap.org/img/wn/02d@2x.png",
+            weatherType.SCATTERED_CLOUDS -> url = "https://openweathermap.org/img/wn/03d@2x.png",
+            weatherType.BROKEN_CLOUDS -> url = "https://openweathermap.org/img/wn/04d@2x.png",
+            weatherType.SHOWER_RAIN -> url = "https://openweathermap.org/img/wn/09d@2x.png",
+            weatherType.RAIN -> url = "https://openweathermap.org/img/wn/10d@2x.png",
+            weatherType.THUNDERSTROM -> url = "https://openweathermap.org/img/wn/11d@2x.png",
+            weatherType.SNOW -> url = "https://openweathermap.org/img/wn/13d@2x.png",
+            weatherType.MIST -> url = "https://openweathermap.org/img/wn/50d@2x.png",
+            weatherType.NO -> TODO() //не грузить ничего
+        }
+        //создать weatherTypeImageView
+        getWeatherTypeImage(url, binding.weatherTypeImage)
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
