@@ -6,7 +6,7 @@ data class WeatherBroadcastResponse(
     @SerializedName("coord")
     val coordinates: CoordinatesResponse,
     @SerializedName("weather")
-    val weatherTypeInformation: List<weatherTypeInformation>,
+    val weatherTypeInformation: List<WeatherTypeInformation>,
     @SerializedName("base")
     val base: String,
     @SerializedName("main")

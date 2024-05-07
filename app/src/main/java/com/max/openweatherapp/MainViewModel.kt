@@ -1,13 +1,17 @@
 package com.max.openweatherapp
 
 
+import android.content.Context
 import android.util.Log
+import android.widget.ImageView
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
+import com.bumptech.glide.Glide
 import com.max.openweatherapp.UI.FavoritesUiState
+import com.max.openweatherapp.UI.WeatherType
 import com.max.openweatherapp.UI.WeatherUiState
 import com.max.openweatherapp.model.CoordinatesOfCityResponse
 import com.max.openweatherapp.network.WeatherApi
@@ -61,7 +65,7 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
                     cityLon = coordinates.first().lon,
                     cityTemp = kelvinToCelsiusConverter(result.weatherParamsResponse.temp),
                     cityWindSpeed = "${result.windResponse.speed} М/С",
-                    cityWeatherType = result.weatherTypeInformation.weatherType
+                    cityWeatherType = result.weatherTypeInformation.first().weatherType,
                 )
 
                 currentCity = city
@@ -165,11 +169,40 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
         }
     }
 
-    fun getWeatherTypeImage(url:String, imageView: ImageView) {
-        Glide
-                .with(this)
-                .load(url)
-                .into(imageView)
+    fun weatherTypeListener(): String {
+        var url = ""
+            when (_weatherUiState.value.city?.cityWeatherType) {
+                "clear sky" -> url =
+                    "https://openweathermap.org/img/wn/01d@2x.png"
+
+                "few clouds" -> url =
+                    "https://openweathermap.org/img/wn/02d@2x.png"
+
+                "scattered clouds" -> url =
+                    "https://openweathermap.org/img/wn/03d@2x.png"
+
+                "broken clouds" -> url =
+                    "https://openweathermap.org/img/wn/04d@2x.png"
+
+                "shower rain" -> url =
+                    "https://openweathermap.org/img/wn/09d@2x.png"
+
+                "rain" -> url =
+                    "https://openweathermap.org/img/wn/10d@2x.png"
+
+                "thunderstorm" -> url =
+                    "https://openweathermap.org/img/wn/11d@2x.png"
+
+                "snow" -> url =
+                    "https://openweathermap.org/img/wn/13d@2x.png"
+
+                "mist" -> url =
+                    "https://openweathermap.org/img/wn/50d@2x.png"
+
+                "no" -> url = "" //не грузить ничего
+            }
+
+        return url
     }
 
     private fun kelvinToCelsiusConverter(kelvinTemp: Double): String {
