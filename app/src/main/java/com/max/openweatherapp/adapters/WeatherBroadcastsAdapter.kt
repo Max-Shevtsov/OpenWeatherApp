@@ -1,19 +1,17 @@
 package com.max.openweatherapp.adapters
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.max.openweatherapp.MainViewModel
 import com.max.openweatherapp.databinding.ItemWeatherBoradcastBinding
 import com.max.openweatherapp.room.City
-import com.max.openweatherapp.room.CityDatabase
 import com.max.openweatherapp.room.CityRepository
 
-class WeatherBroadcastsAdapter(private val cityDeleteListener: (cityId:Long) -> Unit ) :
+class WeatherBroadcastsAdapter(private val onClick: (city:City) -> Unit ) :
     ListAdapter<City, WeatherBroadcastsAdapter.ViewHolder>(ALL_CITY) {
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItemWeatherBoradcastBinding.inflate(inflater, parent, false)
@@ -22,7 +20,7 @@ class WeatherBroadcastsAdapter(private val cityDeleteListener: (cityId:Long) -> 
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val city = getItem(position)
-        holder.bind(city, cityDeleteListener)
+        holder.bind(city, onClick)
 
     }
 
@@ -31,12 +29,22 @@ class WeatherBroadcastsAdapter(private val cityDeleteListener: (cityId:Long) -> 
     ) : RecyclerView.ViewHolder(binding.root) {
 
 
-        fun bind(city: City, cityDeleteListener: (cityId: Long) -> Unit) {
+//        init {
+//            binding.root.setOnClickListener {
+//                currentCity?.let {
+//                    onClick(it)
+//                }
+//            }
+//        }
+
+        fun bind(city: City, onClick: (City)-> Unit) {              //onClick: (city) -> Unit)
+            
+
             with(binding) {
                 itemCityName.text = city.cityName
                 itemCityTemp.text = city.cityTemp
                 itemCityWindSpeed.text = city.cityWindSpeed
-                itemDeleteButton.setOnClickListener { cityDeleteListener(city.cityId)
+                root.setOnClickListener { onClick(city)
 
                 }
             }

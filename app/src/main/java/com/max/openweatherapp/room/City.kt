@@ -24,5 +24,7 @@ data class City(
     @ColumnInfo(name = "city_lon")
     val cityLon: Double = 0.0,
 
+    @ColumnInfo(name = "city_is_starred")
+    var isStarred: Boolean = false,
 
 )

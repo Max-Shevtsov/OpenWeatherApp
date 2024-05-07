@@ -14,7 +14,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
         
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/itemDeleteButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -22,7 +22,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/itemCityName"/>
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/itemCityTemp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -31,7 +31,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/itemCityName" />
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView        
         android:id="@+id/itemCityWindSpeed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

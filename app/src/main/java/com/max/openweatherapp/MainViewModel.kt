@@ -4,13 +4,17 @@ package com.max.openweatherapp
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
-import com.max.openweatherapp.UI.MainActivityUiState
+import androidx.lifecycle.viewmodel.CreationExtras
+import com.max.openweatherapp.UI.FavoritesUiState
+import com.max.openweatherapp.UI.WeatherUiState
 import com.max.openweatherapp.model.CoordinatesOfCityResponse
 import com.max.openweatherapp.network.WeatherApi
 import com.max.openweatherapp.room.City
 import com.max.openweatherapp.room.CityRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,13 +25,19 @@ import java.lang.IllegalArgumentException
 
 class MainViewModel(private val repository: CityRepository) : ViewModel() {
 
-    private val _uiState: MutableStateFlow<MainActivityUiState> =
-        MutableStateFlow(MainActivityUiState())
-    val uiState: StateFlow<MainActivityUiState> = _uiState.asStateFlow()
+    private val _favoritesUiState: MutableStateFlow<FavoritesUiState> =
+        MutableStateFlow(FavoritesUiState())
+    val favoritesUiState: StateFlow<FavoritesUiState> = _favoritesUiState.asStateFlow()
+
+    private val _weatherUiState: MutableStateFlow<WeatherUiState> =
+        MutableStateFlow(WeatherUiState())
+    val weatherUiState: StateFlow<WeatherUiState> = _weatherUiState.asStateFlow()
+
+    private var currentCity: City = City()
 
     init {
-       Log.e("!!!", "run Init")
-       updateWeatherBroadcast()
+        Log.e("!!!", "run Init")
+        updateFavoritesBroadcast()
     }
 
     fun getWeatherBroadcast(city: String) {
@@ -45,7 +55,7 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
 
                 Log.e("!!!", "City`s: $city")
 
-                val cityIntoDb = City(
+                val city = City(
                     cityName = city,
                     cityLat = coordinates.first().lat,
                     cityLon = coordinates.first().lon,
@@ -53,13 +63,12 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
                     cityWindSpeed = "${result.windResponse.speed} М/С",
                 )
 
-                repository.insert(cityIntoDb)
-                val cities = repository.allCity()
-                _uiState.update {
-                    it.copy(allCity = cities)
-                }
+                currentCity = city
+
+                updateWeatherBroadcast(currentCity)
+
             } catch (e: IOException) {
-                _uiState.update {
+                _weatherUiState.update {
                     val message = e.message
                     it.copy(errorMessage = message)
                 }
@@ -67,30 +76,62 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
         }
     }
 
-    fun updateWeatherBroadcast() {
+
+    fun refreshWeather() {
+        viewModelScope.launch {
+            _favoritesUiState.update {
+                it.copy(isLoading = true)
+            }
+            updateCitiesWeather(_favoritesUiState.value.allCity)
+            _favoritesUiState.update {
+                it.copy(isLoading = false)
+            }
+        }
+    }
+
+    private suspend fun updateCitiesWeather(cities: List<City>) {
+//        val updateWeatherJobs = mutableListOf<Deferred<Unit>>()
+//        cities.forEach { city ->
+//            val updatedWeatherResult = viewModelScope.async(Dispatchers.IO) {
+//                val weather = WeatherApi.retrofitService.getBroadcast(city.cityLat, city.cityLon)
+//                val updatedCity = city.copy(
+//                    cityTemp = kelvinToCelsiusConverter(weather.weatherParamsResponse.temp),
+//                    cityWindSpeed = "${weather.windResponse.speed} М/С",
+//                )
+//                repository.updateCity(updatedCity)
+//            }
+//            updateWeatherJobs.add(updatedWeatherResult)
+//        }
+//        updateWeatherJobs.forEach { it.await() }
+
+        cities.map { city ->
+            viewModelScope.async(Dispatchers.IO) {
+                val weather = WeatherApi.retrofitService.getBroadcast(city.cityLat, city.cityLon)
+                val updatedCity = city.copy(
+                    cityTemp = kelvinToCelsiusConverter(weather.weatherParamsResponse.temp),
+                    cityWindSpeed = "${weather.windResponse.speed} М/С",
+                )
+                repository.updateCity(updatedCity)
+            }
+        }.forEach { it.await() }
+    }
+
+    private fun updateFavoritesBroadcast() {
         viewModelScope.launch(Dispatchers.IO) {
-            val allCity = repository.allCity()
-            val updatedCities = mutableListOf<City>()
-        
-            allCity.forEach { city ->
-                _uiState.update {
-                    it.copy(isLoading = true)
-                }
-                val result = WeatherApi.retrofitService.getBroadcast(city.cityLat, city.cityLon)
-                    val updatedCity = city.copy(
-                        cityTemp = kelvinToCelsiusConverter(result.weatherParamsResponse.temp),
-                        cityWindSpeed = "${result.windResponse.speed} М/С",
-                    )
-                    updatedCities.add(updatedCity)
-                }
-
-                repository.update(updatedCities)
-
-                _uiState.update {
+            repository.cities().collect { cities ->
+                _favoritesUiState.update {
                     it.copy(
-                        allCity = updatedCities,
-                        isLoading = false
+                        allCity = cities,
                     )
+                }
+            }
+        }
+    }
+
+    fun updateWeatherBroadcast(city: City) {
+        viewModelScope.launch {
+            _weatherUiState.update {
+                it.copy(city = city)
             }
         }
     }
@@ -101,29 +142,47 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
         )
     }
 
-    fun deleteCityFromDb(cityId: Long) {
+    fun putCityIntoFavorites() {
         viewModelScope.launch(Dispatchers.Default) {
-            val city = repository.getCityById((cityId))
-            repository.delete(city)
-            val allCity = repository.allCity()
-            _uiState.update {
-                it.copy(allCity = allCity)
+            val city = (_weatherUiState.value.city) ?: return@launch
+            city.isStarred = true
+            _weatherUiState.update {
+                it.copy(
+                    city = city,
+                )
             }
+            repository.insert(city)
         }
     }
+
+    fun deleteCityFromFavorites() {
+        viewModelScope.launch(Dispatchers.Default) {
+            //val city = _favoritesUiState.value.allCity.firstOrNull { it.cityId == currentCity.cityId } ?: return@launch
+            val city = (_weatherUiState.value.city) ?: return@launch
+            city.isStarred = false
+            repository.delete(city)
+        }
+    }
+
 
     private fun kelvinToCelsiusConverter(kelvinTemp: Double): String {
         val KELVIN_TO_CELSIUS = 273.15
         return "${(kelvinTemp - KELVIN_TO_CELSIUS).toUInt()} C"
     }
-}
 
-class MainViewModelFactory(private val repository: CityRepository) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
-            return MainViewModel(repository) as T
+    companion object {
+        val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(
+                modelClass: Class<T>,
+                extras: CreationExtras
+            ): T {
+                if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
+                    val application = checkNotNull(extras[APPLICATION_KEY])
+                    return MainViewModel((application as CityApplication).repository) as T
+                }
+                throw IllegalArgumentException("Unknown ViewModel")
+            }
+
         }
-        throw IllegalArgumentException("Unknown ViewModel")
     }
 }
-

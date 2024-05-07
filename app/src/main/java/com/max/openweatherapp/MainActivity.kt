@@ -1,5 +1,7 @@
 package com.max.openweatherapp
 
+import FavoritesFragment
+import WeatherFragment
 import android.annotation.SuppressLint
 import android.app.SearchManager
 import android.content.ComponentName
@@ -9,9 +11,14 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
+import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.add
+import androidx.fragment.app.commit
+import androidx.fragment.app.replace
 import com.max.openweatherapp.databinding.ActivityMainBinding
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,10 +34,9 @@ class MainActivity : AppCompatActivity() {
 
 
     private val viewModel: MainViewModel by viewModels {
-        MainViewModelFactory((application as CityApplication).repository)
+        MainViewModel.Factory
     }
 
-    private lateinit var adapter: WeatherBroadcastsAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,22 +44,15 @@ class MainActivity : AppCompatActivity() {
 
         viewBinding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
-
-        adapter = WeatherBroadcastsAdapter { cityId ->
-            viewModel.deleteCityFromDb(cityId)
-        }
-
-        val recyclerView = binding.recyclerView
-        recyclerView.adapter = adapter
-        recyclerView.layoutManager = LinearLayoutManager(this)
         val intent = intent
-                }
+        supportFragmentManager.commit {
+            replace<WeatherFragment>(R.id.fragment_container_view)
+        }
 
         setContentView(view)
         setSupportActionBar(binding.toolBar)
         handleIntent(intent)
         initListeners()
-        renderState()
 
     }
 
@@ -62,33 +61,37 @@ class MainActivity : AppCompatActivity() {
         handleIntent(intent)
     }
 
-    private fun handleIntent(intent:Intent) {
-        
+    private fun handleIntent(intent: Intent) {
+
         if (Intent.ACTION_SEARCH == intent.action) {
             intent.getStringExtra(SearchManager.QUERY)?.also { query ->
                 viewModel.getWeatherBroadcast(query)
+                // добавить навигацию к weatherFragment?
+                supportFragmentManager.commit {
+                    replace<WeatherFragment>(R.id.fragment_container_view)
                 }
-            }
-        } 
-
-    private fun renderState() {
-        lifecycleScope.launch(Dispatchers.Main) {
-            viewModel.uiState.collect { state ->
-                adapter.submitList(state.allCity)
-                if (!state.isLoading)
-                    binding.swipeRefresh.isRefreshing = false
-                //if(state.errorMessage? != null)run {
-                //val toast = Toast.makeText(context, state.errorMessage,).show()
             }
         }
     }
 
     private fun initListeners() {
-        binding.swipeRefresh.setOnRefreshListener {
-            Log.e("!!!", "onRefresh called from SwipeRefreshLayout")
-            viewModel.updateWeatherBroadcast()
-            
+        binding.toolBar.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.action_favorites -> {
+                    //nav to favorites_fragment
+                    supportFragmentManager.commit {
+                        replace<FavoritesFragment>(R.id.fragment_container_view)
+                    }
+                    true
+                }
+
+                else -> false
+            }
         }
+    }
+
+    fun replaceWeatherFragment() {
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -103,5 +106,4 @@ class MainActivity : AppCompatActivity() {
 
         return super.onCreateOptionsMenu(menu)
     }
-
 }
