@@ -26,6 +26,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.IOException
 import java.lang.IllegalArgumentException
+import coil.load
 
 class MainViewModel(private val repository: CityRepository) : ViewModel() {
 
@@ -169,9 +170,9 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
         }
     }
 
-    fun weatherTypeListener(): String {
+    fun weatherTypeListener(weatherType:String): String {
         var url = ""
-            when (_weatherUiState.value.city?.cityWeatherType) {
+            when (weatherType) {
                 "clear sky" -> url =
                     "https://openweathermap.org/img/wn/01d@2x.png"
 
@@ -203,6 +204,14 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
             }
 
         return url
+    }
+
+    fun loadWeatherTypePicture(context: Context, url: String, uiItem: Any) {
+        //Glide
+        //    .with(context)
+        //    .load(url)
+        //    .into(uiItem)
+        uiItem.load(url)
     }
 
     private fun kelvinToCelsiusConverter(kelvinTemp: Double): String {

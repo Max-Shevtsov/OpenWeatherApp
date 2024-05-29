@@ -36,11 +36,7 @@ class WeatherFragment : Fragment(R.layout.weather_fragment) {
 
         initListeners()
         renderState()
-        Glide
-            .with(this)
-            .load(viewModel.weatherTypeListener())
-            .into(binding.weatherType)
-        Log.e("!!!", "${viewModel.weatherTypeListener()}")
+        
         return view
     }
 
@@ -55,6 +51,11 @@ class WeatherFragment : Fragment(R.layout.weather_fragment) {
                 binding.cityTemp.text = state.city?.cityTemp
                 binding.cityWindSpeed.text = state.city?.cityWindSpeed
                 binding.starButton.isChecked = state.city?.isStarred ?: false
+                loadWeatherTypePicture(
+                    context = context,
+                    url = viewModel.weatherTypeListener(state.city?.weatherType),
+                    uiItem = binding.weatherType
+                )
             }
 
 
