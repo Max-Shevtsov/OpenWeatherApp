@@ -52,13 +52,10 @@ class WeatherFragment : Fragment(R.layout.weather_fragment) {
                 binding.cityWindSpeed.text = state.city?.cityWindSpeed
                 binding.starButton.isChecked = state.city?.isStarred ?: false
                 loadWeatherTypePicture(
-                    context = context,
                     url = viewModel.weatherTypeListener(state.city?.weatherType),
                     uiItem = binding.weatherType
                 )
             }
-
-
         }
     }
 

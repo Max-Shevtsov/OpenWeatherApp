@@ -207,6 +207,7 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
     }
 
     fun loadWeatherTypePicture(context: Context, url: String, uiItem: Any) {
+        // не поддерживает корутины, заменил на Coil
         //Glide
         //    .with(context)
         //    .load(url)
