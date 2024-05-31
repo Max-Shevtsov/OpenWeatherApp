@@ -17,9 +17,9 @@ data class City(
 
     @ColumnInfo(name = "city_wind_speed")
     var cityWindSpeed: String = "",
-    
-    @ColumnInfo(name = "city_weather_type")
-    var cityWeatherType: String = "",
+
+    @ColumnInfo(name = "city_weather_type_icon")
+    var icon: String = "",
 
     @ColumnInfo(name = "city_lat")
     val cityLat: Double = 0.0,
@@ -30,4 +30,4 @@ data class City(
     @ColumnInfo(name = "city_is_starred")
     var isStarred: Boolean = false,
 
-)
+    )

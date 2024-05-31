@@ -50,7 +50,7 @@ class WeatherFragment : Fragment(R.layout.weather_fragment), LoadIcon {
                 binding.cityTemp.text = state.city?.cityTemp
                 binding.cityWindSpeed.text = state.city?.cityWindSpeed
                 binding.starButton.isChecked = state.city?.isStarred ?: false
-                binding.weatherType.load(state.city?.icon)
+                super.loadWeatherTypePicture(state.city?.icon, binding.weatherType)
             }
         }
     }
@@ -65,6 +65,7 @@ class WeatherFragment : Fragment(R.layout.weather_fragment), LoadIcon {
             }
         }
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

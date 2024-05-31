@@ -1,7 +1,6 @@
 package com.max.openweatherapp
 
 
-import android.content.Context
 import android.util.Log
 import android.widget.ImageView
 import androidx.lifecycle.ViewModel
@@ -11,7 +10,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 //import com.bumptech.glide.Glide
 import com.max.openweatherapp.UI.FavoritesUiState
-import com.max.openweatherapp.UI.WeatherType
 import com.max.openweatherapp.UI.WeatherUiState
 import com.max.openweatherapp.model.CoordinatesOfCityResponse
 import com.max.openweatherapp.network.WeatherApi
@@ -67,7 +65,7 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
                     cityLon = coordinates.first().lon,
                     cityTemp = kelvinToCelsiusConverter(result.weatherParamsResponse.temp),
                     cityWindSpeed = "${result.windResponse.speed} М/С",
-                    cityWeatherType = result.weatherTypeInformation.first().icon,
+                    icon = result.weatherTypeInformation.first().icon,
                 )
 
                 currentCity = city
@@ -173,15 +171,7 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
 
     
 
-    fun loadWeatherTypePicture(url: String, uiItem: ImageView) {
-        // не поддерживает корутины, заменил на Coil
-        //Glide
-        //    .with(context)
-        //    .load(url)
-        //    .into(uiItem)
-        uiItem.load(url)
-        Log.e("!!!", "url:$url")
-    }
+
 
     private fun kelvinToCelsiusConverter(kelvinTemp: Double): String {
         val KELVIN_TO_CELSIUS = 273.15
