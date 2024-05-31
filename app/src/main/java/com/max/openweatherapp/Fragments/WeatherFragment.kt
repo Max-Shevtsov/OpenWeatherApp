@@ -8,7 +8,6 @@ import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
-import com.bumptech.glide.Glide
 import com.max.openweatherapp.MainViewModel
 import com.max.openweatherapp.R
 import com.max.openweatherapp.UI.WeatherType
@@ -36,7 +35,7 @@ class WeatherFragment : Fragment(R.layout.weather_fragment) {
 
         initListeners()
         renderState()
-        
+
         return view
     }
 
@@ -51,8 +50,8 @@ class WeatherFragment : Fragment(R.layout.weather_fragment) {
                 binding.cityTemp.text = state.city?.cityTemp
                 binding.cityWindSpeed.text = state.city?.cityWindSpeed
                 binding.starButton.isChecked = state.city?.isStarred ?: false
-                loadWeatherTypePicture(
-                    url = viewModel.weatherTypeListener(state.city?.weatherType),
+                viewModel.loadWeatherTypePicture(
+                    url = viewModel.weatherTypeListener(state.city?.cityWeatherType),
                     uiItem = binding.weatherType
                 )
             }

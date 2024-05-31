@@ -9,7 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
-import com.bumptech.glide.Glide
+//import com.bumptech.glide.Glide
 import com.max.openweatherapp.UI.FavoritesUiState
 import com.max.openweatherapp.UI.WeatherType
 import com.max.openweatherapp.UI.WeatherUiState
@@ -27,6 +27,7 @@ import kotlinx.coroutines.launch
 import java.io.IOException
 import java.lang.IllegalArgumentException
 import coil.load
+
 
 class MainViewModel(private val repository: CityRepository) : ViewModel() {
 
@@ -170,49 +171,40 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
         }
     }
 
-    fun weatherTypeListener(weatherType:String): String {
-        var url = ""
+    fun weatherTypeListener(weatherType:String?): String {
+        Log.e("!!!", "weatherType:$weatherType")
             when (weatherType) {
-                "clear sky" -> url =
-                    "https://openweathermap.org/img/wn/01d@2x.png"
+                "Clear sky" -> return "https://openweathermap.org/img/wn/01d@2x.png"
 
-                "few clouds" -> url =
-                    "https://openweathermap.org/img/wn/02d@2x.png"
+                "Few clouds" -> return "https://openweathermap.org/img/wn/02d@2x.png"
 
-                "scattered clouds" -> url =
-                    "https://openweathermap.org/img/wn/03d@2x.png"
+                "Scattered clouds" -> return "https://openweathermap.org/img/wn/03d@2x.png"
 
-                "broken clouds" -> url =
-                    "https://openweathermap.org/img/wn/04d@2x.png"
+                "Broken clouds" -> return "https://openweathermap.org/img/wn/04d@2x.png"
 
-                "shower rain" -> url =
-                    "https://openweathermap.org/img/wn/09d@2x.png"
+                "Shower rain" -> return "https://openweathermap.org/img/wn/09d@2x.png"
 
-                "rain" -> url =
-                    "https://openweathermap.org/img/wn/10d@2x.png"
+                "Rain" -> return "https://openweathermap.org/img/wn/10d@2x.png"
 
-                "thunderstorm" -> url =
-                    "https://openweathermap.org/img/wn/11d@2x.png"
+                "Thunderstorm" -> return "https://openweathermap.org/img/wn/11d@2x.png"
 
-                "snow" -> url =
-                    "https://openweathermap.org/img/wn/13d@2x.png"
+                "Snow" -> return "https://openweathermap.org/img/wn/13d@2x.png"
 
-                "mist" -> url =
-                    "https://openweathermap.org/img/wn/50d@2x.png"
+                "Mist" -> return "https://openweathermap.org/img/wn/50d@2x.png"
 
-                "no" -> url = "" //не грузить ничего
+                "No" -> return  "" //не грузить ничего
+                else -> return ""
             }
-
-        return url
     }
 
-    fun loadWeatherTypePicture(context: Context, url: String, uiItem: Any) {
+    fun loadWeatherTypePicture(url: String, uiItem: ImageView) {
         // не поддерживает корутины, заменил на Coil
         //Glide
         //    .with(context)
         //    .load(url)
         //    .into(uiItem)
         uiItem.load(url)
+        Log.e("!!!", "url:$url")
     }
 
     private fun kelvinToCelsiusConverter(kelvinTemp: Double): String {
