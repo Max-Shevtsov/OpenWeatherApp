@@ -67,7 +67,7 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
                     cityLon = coordinates.first().lon,
                     cityTemp = kelvinToCelsiusConverter(result.weatherParamsResponse.temp),
                     cityWindSpeed = "${result.windResponse.speed} М/С",
-                    cityWeatherType = result.weatherTypeInformation.first().weatherType,
+                    cityWeatherType = result.weatherTypeInformation.first().icon,
                 )
 
                 currentCity = city
@@ -171,31 +171,7 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
         }
     }
 
-    fun weatherTypeListener(weatherType:String?): String {
-        Log.e("!!!", "weatherType:$weatherType")
-            when (weatherType) {
-                "Clear sky" -> return "https://openweathermap.org/img/wn/01d@2x.png"
-
-                "Few clouds" -> return "https://openweathermap.org/img/wn/02d@2x.png"
-
-                "Scattered clouds" -> return "https://openweathermap.org/img/wn/03d@2x.png"
-
-                "Broken clouds" -> return "https://openweathermap.org/img/wn/04d@2x.png"
-
-                "Shower rain" -> return "https://openweathermap.org/img/wn/09d@2x.png"
-
-                "Rain" -> return "https://openweathermap.org/img/wn/10d@2x.png"
-
-                "Thunderstorm" -> return "https://openweathermap.org/img/wn/11d@2x.png"
-
-                "Snow" -> return "https://openweathermap.org/img/wn/13d@2x.png"
-
-                "Mist" -> return "https://openweathermap.org/img/wn/50d@2x.png"
-
-                "No" -> return  "" //не грузить ничего
-                else -> return ""
-            }
-    }
+    
 
     fun loadWeatherTypePicture(url: String, uiItem: ImageView) {
         // не поддерживает корутины, заменил на Coil

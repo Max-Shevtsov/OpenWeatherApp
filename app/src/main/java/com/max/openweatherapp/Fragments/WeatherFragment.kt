@@ -16,7 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
-class WeatherFragment : Fragment(R.layout.weather_fragment) {
+class WeatherFragment : Fragment(R.layout.weather_fragment), LoadIcon {
 
     private var _binding: WeatherFragmentBinding? = null
     private val binding get() = _binding!!
@@ -50,10 +50,7 @@ class WeatherFragment : Fragment(R.layout.weather_fragment) {
                 binding.cityTemp.text = state.city?.cityTemp
                 binding.cityWindSpeed.text = state.city?.cityWindSpeed
                 binding.starButton.isChecked = state.city?.isStarred ?: false
-                viewModel.loadWeatherTypePicture(
-                    url = viewModel.weatherTypeListener(state.city?.cityWeatherType),
-                    uiItem = binding.weatherType
-                )
+                binding.weatherType.load(state.city?.icon)
             }
         }
     }
