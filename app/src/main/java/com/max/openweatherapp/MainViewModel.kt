@@ -115,6 +115,7 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
                 val updatedCity = city.copy(
                     cityTemp = kelvinToCelsiusConverter(weather.weatherParamsResponse.temp),
                     cityWindSpeed = "${weather.windResponse.speed} М/С",
+                    icon = weather.weatherTypeInformation.first().icon
                 )
                 repository.updateCity(updatedCity)
             }
