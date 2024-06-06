@@ -1,18 +1,22 @@
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.max.openweatherapp.MainViewModel
 import com.max.openweatherapp.R
+import com.max.openweatherapp.UI.WeatherType
 import com.max.openweatherapp.databinding.WeatherFragmentBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
-class WeatherFragment : Fragment(R.layout.weather_fragment) {
+class WeatherFragment : Fragment(R.layout.weather_fragment), LoadIcon {
 
     private var _binding: WeatherFragmentBinding? = null
     private val binding get() = _binding!!
@@ -46,9 +50,8 @@ class WeatherFragment : Fragment(R.layout.weather_fragment) {
                 binding.cityTemp.text = state.city?.cityTemp
                 binding.cityWindSpeed.text = state.city?.cityWindSpeed
                 binding.starButton.isChecked = state.city?.isStarred ?: false
+                super.loadWeatherTypePicture(state.city?.icon, binding.weatherType)
             }
-
-
         }
     }
 
@@ -62,6 +65,7 @@ class WeatherFragment : Fragment(R.layout.weather_fragment) {
             }
         }
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

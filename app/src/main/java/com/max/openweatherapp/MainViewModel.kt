@@ -2,11 +2,13 @@ package com.max.openweatherapp
 
 
 import android.util.Log
+import android.widget.ImageView
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
+//import com.bumptech.glide.Glide
 import com.max.openweatherapp.UI.FavoritesUiState
 import com.max.openweatherapp.UI.WeatherUiState
 import com.max.openweatherapp.model.CoordinatesOfCityResponse
@@ -22,6 +24,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.IOException
 import java.lang.IllegalArgumentException
+import coil.load
+
 
 class MainViewModel(private val repository: CityRepository) : ViewModel() {
 
@@ -61,6 +65,7 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
                     cityLon = coordinates.first().lon,
                     cityTemp = kelvinToCelsiusConverter(result.weatherParamsResponse.temp),
                     cityWindSpeed = "${result.windResponse.speed} М/С",
+                    icon = result.weatherTypeInformation.first().icon,
                 )
 
                 currentCity = city
@@ -110,6 +115,7 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
                 val updatedCity = city.copy(
                     cityTemp = kelvinToCelsiusConverter(weather.weatherParamsResponse.temp),
                     cityWindSpeed = "${weather.windResponse.speed} М/С",
+                    icon = weather.weatherTypeInformation.first().icon
                 )
                 repository.updateCity(updatedCity)
             }
@@ -163,6 +169,9 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
             repository.delete(city)
         }
     }
+
+    
+
 
 
     private fun kelvinToCelsiusConverter(kelvinTemp: Double): String {

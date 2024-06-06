@@ -2,6 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:elevation="5dp"
+    android:background="@drawable/rectangle"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     
@@ -11,17 +13,10 @@
         android:hint="City"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
         
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/itemDeleteButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="delete"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/itemCityName"/>
-
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/itemCityTemp"
         android:layout_width="wrap_content"
