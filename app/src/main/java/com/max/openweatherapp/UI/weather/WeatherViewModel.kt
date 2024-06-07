@@ -9,7 +9,9 @@ class WeatherViewModel(private val cityRepository: CityRepository) {
     fun getWeatherBroadcast(city: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                cityRepository.getWeatherBroadcast(city)
+                cityRepository.insert(
+                    cityRepository.getWeatherBroadcast(city)
+                )
                 updateWeatherBroadcast(cityRepository.)
 
             } catch (e: IOException) {

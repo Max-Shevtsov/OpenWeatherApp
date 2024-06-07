@@ -7,10 +7,16 @@ class CityRepository(
     private val networkDataSource: WeatherApiService  // пеерименовать в NetworkDataSource
 ) {
 
+    suspend fun insert(city: City) {
+        localDataSource.insert(city)
+    }
 
+    suspend fun delete(city: City) {
+        localDataSource.delete(city)
+    }
 
-    suspend fun getCityById(cityId: Long): City {
-        return cityDao.getCityById(cityId)
+    suspend fun update(cities: List<City>) {
+        localDataSource.update(cities)
     }
 
     suspend fun getWeatherBroadcast(city: String): City {
@@ -36,4 +42,6 @@ class CityRepository(
         )
         return city
     }
+
+    
 }
