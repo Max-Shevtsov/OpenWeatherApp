@@ -49,7 +49,7 @@ class FavoritesRepository(
         //        updateWeatherJobs.forEach { it.await() }
         
     cities.map { city ->
-        lifecycleScope.async(Dispatchers.IO) {
+        coroutineScope.async(Dispatchers.IO) {
             val weather = networkDataSource.getBroadcast(city.cityLat, city.cityLon)
             val updatedCity = city.copy(
                 cityTemp = kelvinToCelsiusConverter(weather.weatherParamsResponse.temp),
