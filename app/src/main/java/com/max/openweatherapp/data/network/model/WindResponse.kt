@@ -1,4 +1,4 @@
-package com.max.openweatherapp.model
+package com.max.openweatherapp.data.network.model
 
 import com.google.gson.annotations.SerializedName
 
