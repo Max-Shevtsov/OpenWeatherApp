@@ -1,4 +1,4 @@
-package com.max.openweatherapp.data.room
+package com.max.openweatherapp.data.room.favoritesDataSource
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
