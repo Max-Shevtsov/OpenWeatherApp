@@ -14,23 +14,23 @@ class FavoritesRepository(
     }
 
     suspend fun insert(city: City) {
-        cityDao.insert(city)
+        localDataSource.insert(city)
     }
 
     suspend fun delete(city: City) {
-        cityDao.delete(city)
+        localDataSource.delete(city)
     }
 
     suspend fun update(cities: List<City>) {
-        cityDao.update(cities)
+        localDataSource.update(cities)
     }
 
     suspend fun updateCity(city: City) {
-        cityDao.updateCity(city)
+        localDataSource.updateCity(city)
     }
 
     suspend fun getCityById(cityId: Long): City {
-        return cityDao.getCityById(cityId)
+        return localDataSource.getCityById(cityId)
     }
 
     suspend fun updateCitiesWeather(cities: List<City>) {

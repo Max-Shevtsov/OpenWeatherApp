@@ -33,42 +33,12 @@ class MainViewModel(
     
 
 
-
-
-    
-
-
-
-    fun putCityIntoFavorites() {
-        viewModelScope.launch(Dispatchers.Default) {
-            val city = (_weatherUiState.value.city) ?: return@launch
-            city.isStarred = true
-            _weatherUiState.update {
-                it.copy(
-                    city = city,
-                )
-            }
-            repository.insert(city)
-        }
+    fun getWeatherBroadcast(city: String) {
+        cityRepository.getWeatherBroadcast(city)
     }
 
-    fun deleteCityFromFavorites() {
-        viewModelScope.launch(Dispatchers.Default) {
-            //val city = _favoritesUiState.value.allCity.firstOrNull { it.cityId == currentCity.cityId } ?: return@launch
-            val city = (_weatherUiState.value.city) ?: return@launch
-            city.isStarred = false
-            repository.delete(city)
-        }
-    }
-
-    
 
 
-
-    private fun kelvinToCelsiusConverter(kelvinTemp: Double): String {
-        val KELVIN_TO_CELSIUS = 273.15
-        return "${(kelvinTemp - KELVIN_TO_CELSIUS).toUInt()} C"
-    }
 
     companion object {
         val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {

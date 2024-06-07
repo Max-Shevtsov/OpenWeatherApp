@@ -36,4 +36,27 @@ class FavoritesViewModel(
             }
         }
     }
+
+    fun putCityIntoFavorites() {
+        viewModelScope.launch(Dispatchers.Default) {
+            val city = (_weatherUiState.value.city) ?: return@launch
+            city.isStarred = true
+            _weatherUiState.update {
+                it.copy(
+                    city = city,
+                )
+            }
+            favoritesRepository.insert(city)
+        }
+    }
+
+    fun deleteCityFromFavorites() {
+        viewModelScope.launch(Dispatchers.Default) {
+            //val city = _favoritesUiState.value.allCity.firstOrNull { it.cityId == currentCity.cityId } ?: return@launch
+            val city = (_weatherUiState.value.city) ?: return@launch
+            city.isStarred = false
+            favoritesRepository.delete(city)
+        }
+    }
+
 }
