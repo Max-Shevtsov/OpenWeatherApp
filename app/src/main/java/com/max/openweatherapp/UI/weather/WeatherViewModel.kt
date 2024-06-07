@@ -6,9 +6,8 @@ class WeatherViewModel(private val cityRepository: CityRepository) {
     fun getWeatherBroadcast(city: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                updateWeatherBroadcast(
-                    cityRepository.getWeatherBroadcast(city)
-                )
+                cityRepository.getWeatherBroadcast(city)
+                updateWeatherBroadcast(cityRepository.)
 
             } catch (e: IOException) {
                 _weatherUiState.update {
