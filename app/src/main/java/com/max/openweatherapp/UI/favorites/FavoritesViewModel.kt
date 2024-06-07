@@ -14,13 +14,21 @@ class FavoritesViewModel(
 
     fun refreshWeather() {
         viewModelScope.launch {
-            _favoritesUiState.update {
-                it.copy(isLoading = true)
+            try{
+                _favoritesUiState.update {
+                    it.copy(isLoading = true)
+                }
+                favoritesRepository.updateCitiesWeather(_favoritesUiState.value.allCity)
+                _favoritesUiState.update {
+                    it.copy(isLoading = false)
+                }
+            } catch(e: IOExcetption) {
+                _favoritesUiState.update {
+                    val message = e.message
+                    is.copy = (errorMessage = message)
+                }
             }
-            favoritesRepository.updateCitiesWeather(_favoritesUiState.value.allCity)
-            _favoritesUiState.update {
-                it.copy(isLoading = false)
-            }
+            
         }
     }
 
