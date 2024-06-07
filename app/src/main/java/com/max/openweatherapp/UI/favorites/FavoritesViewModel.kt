@@ -17,7 +17,7 @@ class FavoritesViewModel(
             _favoritesUiState.update {
                 it.copy(isLoading = true)
             }
-            updateCitiesWeather(_favoritesUiState.value.allCity)
+            favoritesRepository.updateCitiesWeather(_favoritesUiState.value.allCity)
             _favoritesUiState.update {
                 it.copy(isLoading = false)
             }

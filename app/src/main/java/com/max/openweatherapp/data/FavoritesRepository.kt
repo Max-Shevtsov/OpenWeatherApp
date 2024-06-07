@@ -50,7 +50,7 @@ class FavoritesRepository(
         
     cities.map { city ->
         viewModelScope.async(Dispatchers.IO) {
-            val weather = WeatherApi.retrofitService.getBroadcast(city.cityLat, city.cityLon)
+            val weather = networkDataSource.getBroadcast(city.cityLat, city.cityLon)
             val updatedCity = city.copy(
                 cityTemp = kelvinToCelsiusConverter(weather.weatherParamsResponse.temp),
                 cityWindSpeed = "${weather.windResponse.speed} М/С",
