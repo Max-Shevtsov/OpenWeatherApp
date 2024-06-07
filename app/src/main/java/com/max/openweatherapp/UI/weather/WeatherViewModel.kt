@@ -12,9 +12,14 @@ class WeatherViewModel(
     fun getWeatherBroadcast(city: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                cityRepository.insert(
-                    cityRepository.getWeatherBroadcast(city)
-                )
+                val currentCity = cityRepository.getWeatherBroadcast(city)
+                
+                if (cityRepository.databaseIsEmpty) {
+                    cityRepository.insert(currentCity)
+                } else {
+                    cityRepository.update(currentCity)
+                }
+                
                 updateWeatherBroadcast(cityRepository.)
 
             } catch (e: IOException) {

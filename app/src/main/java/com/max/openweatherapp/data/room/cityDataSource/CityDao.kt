@@ -14,6 +14,9 @@ interface CityDao {
 
     @Update
     suspend fun update(city: City)
+    
+    @query("SELECT (SELECT COUNT(*) FROM city_table) == 0")
+    suspend fun databaseIsEmpty(): Boolean
 
     @Delete
     suspend fun delete(city: City)

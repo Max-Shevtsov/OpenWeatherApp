@@ -15,8 +15,12 @@ class CityRepository(
         localDataSource.delete(city)
     }
 
-    suspend fun update(cities: List<City>) {
-        localDataSource.update(cities)
+    suspend fun update(city: City) {
+        localDataSource.update(city)
+    }
+
+    suspend fun databaseisEmpty():Boolean {
+       return localDataSource.databaseIsEmpty()
     }
 
     suspend fun getWeatherBroadcast(city: String): City {
