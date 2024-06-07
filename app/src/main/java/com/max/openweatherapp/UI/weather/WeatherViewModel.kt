@@ -1,0 +1,30 @@
+class WeatherViewModel(private val cityRepository: CityRepository) {
+    private val _weatherUiState: MutableStateFlow<WeatherUiState> =
+        MutableStateFlow(WeatherUiState())
+    val weatherUiState: StateFlow<WeatherUiState> = _weatherUiState.asStateFlow()
+
+    fun getWeatherBroadcast(city: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                updateWeatherBroadcast(
+                    cityRepository.getWeatherBroadcast(city)
+                )
+
+            } catch (e: IOException) {
+                _weatherUiState.update {
+                    val message = e.message
+                    it.copy(errorMessage = message)
+                }
+            }
+        }
+    }
+
+    fun updateWeatherBroadcast(city: City) {
+        viewModelScope.launch {
+            _weatherUiState.update {
+                it.copy(city = city)
+            }
+        }
+    }
+
+}

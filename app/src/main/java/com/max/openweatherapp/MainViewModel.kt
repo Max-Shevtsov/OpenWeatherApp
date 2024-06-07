@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
-//import com.bumptech.glide.Glide
 import com.max.openweatherapp.UI.FavoritesUiState
 import com.max.openweatherapp.UI.WeatherUiState
 import com.max.openweatherapp.model.CoordinatesOfCityResponse
@@ -33,9 +32,7 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
         MutableStateFlow(FavoritesUiState())
     val favoritesUiState: StateFlow<FavoritesUiState> = _favoritesUiState.asStateFlow()
 
-    private val _weatherUiState: MutableStateFlow<WeatherUiState> =
-        MutableStateFlow(WeatherUiState())
-    val weatherUiState: StateFlow<WeatherUiState> = _weatherUiState.asStateFlow()
+
 
     private var currentCity: City = City()
 
@@ -43,44 +40,6 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
         Log.e("!!!", "run Init")
         updateFavoritesBroadcast()
     }
-
-    fun getWeatherBroadcast(city: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                Log.e("!!!", "Start loading")
-
-                val coordinates = getCoordinatesOfCity(city)
-                Log.e("!!!", "Coordinates:$coordinates")
-
-                val result = WeatherApi.retrofitService.getBroadcast(
-                    coordinates.firstOrNull()?.lat,
-                    coordinates.firstOrNull()?.lon,
-                )
-
-                Log.e("!!!", "City`s: $city")
-
-                val city = City(
-                    cityName = city,
-                    cityLat = coordinates.first().lat,
-                    cityLon = coordinates.first().lon,
-                    cityTemp = kelvinToCelsiusConverter(result.weatherParamsResponse.temp),
-                    cityWindSpeed = "${result.windResponse.speed} М/С",
-                    icon = result.weatherTypeInformation.first().icon,
-                )
-
-                currentCity = city
-
-                updateWeatherBroadcast(currentCity)
-
-            } catch (e: IOException) {
-                _weatherUiState.update {
-                    val message = e.message
-                    it.copy(errorMessage = message)
-                }
-            }
-        }
-    }
-
 
     fun refreshWeather() {
         viewModelScope.launch {
@@ -134,19 +93,7 @@ class MainViewModel(private val repository: CityRepository) : ViewModel() {
         }
     }
 
-    fun updateWeatherBroadcast(city: City) {
-        viewModelScope.launch {
-            _weatherUiState.update {
-                it.copy(city = city)
-            }
-        }
-    }
 
-    private suspend fun getCoordinatesOfCity(city: String): List<CoordinatesOfCityResponse> {
-        return WeatherApi.retrofitService.getCoordinatesOfCity(
-            city = city,
-        )
-    }
 
     fun putCityIntoFavorites() {
         viewModelScope.launch(Dispatchers.Default) {
