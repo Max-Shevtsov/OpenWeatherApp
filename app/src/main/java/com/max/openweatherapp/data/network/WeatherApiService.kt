@@ -1,4 +1,4 @@
-package com.max.openweatherapp.network
+package com.max.openweatherapp.data.network
 
 import com.max.openweatherapp.model.CoordinatesOfCityResponse
 import com.max.openweatherapp.model.WeatherBroadcastResponse

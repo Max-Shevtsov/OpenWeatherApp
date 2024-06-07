@@ -1,8 +1,11 @@
-package com.max.openweatherapp.room
+package com.max.openweatherapp.data
 
 import kotlinx.coroutines.flow.Flow
 
-class CityRepository(private val cityDao: CityDao) {
+class CityRepository {
+
+    private val cityLocalDataSource: CityDao
+    private val networkDataSource: NetworkDataSource
 
     fun cities(): Flow<List<City>> {
         return cityDao.getAlphabetizedCity()

@@ -1,4 +1,4 @@
-package com.max.openweatherapp.room
+package com.max.openweatherapp.data.room
 
 import androidx.room.Dao
 import androidx.room.Delete
