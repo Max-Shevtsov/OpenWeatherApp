@@ -26,72 +26,16 @@ import java.lang.IllegalArgumentException
 import coil.load
 
 
-class MainViewModel(private val repository: CityRepository) : ViewModel() {
+class MainViewModel(
+    private val cityRepository: CityRepository,
+    ) : ViewModel() {
 
-    private val _favoritesUiState: MutableStateFlow<FavoritesUiState> =
-        MutableStateFlow(FavoritesUiState())
-    val favoritesUiState: StateFlow<FavoritesUiState> = _favoritesUiState.asStateFlow()
+    
 
 
 
-    private var currentCity: City = City()
 
-    init {
-        Log.e("!!!", "run Init")
-        updateFavoritesBroadcast()
-    }
-
-    fun refreshWeather() {
-        viewModelScope.launch {
-            _favoritesUiState.update {
-                it.copy(isLoading = true)
-            }
-            updateCitiesWeather(_favoritesUiState.value.allCity)
-            _favoritesUiState.update {
-                it.copy(isLoading = false)
-            }
-        }
-    }
-
-    private suspend fun updateCitiesWeather(cities: List<City>) {
-//        val updateWeatherJobs = mutableListOf<Deferred<Unit>>()
-//        cities.forEach { city ->
-//            val updatedWeatherResult = viewModelScope.async(Dispatchers.IO) {
-//                val weather = WeatherApi.retrofitService.getBroadcast(city.cityLat, city.cityLon)
-//                val updatedCity = city.copy(
-//                    cityTemp = kelvinToCelsiusConverter(weather.weatherParamsResponse.temp),
-//                    cityWindSpeed = "${weather.windResponse.speed} М/С",
-//                )
-//                repository.updateCity(updatedCity)
-//            }
-//            updateWeatherJobs.add(updatedWeatherResult)
-//        }
-//        updateWeatherJobs.forEach { it.await() }
-
-        cities.map { city ->
-            viewModelScope.async(Dispatchers.IO) {
-                val weather = WeatherApi.retrofitService.getBroadcast(city.cityLat, city.cityLon)
-                val updatedCity = city.copy(
-                    cityTemp = kelvinToCelsiusConverter(weather.weatherParamsResponse.temp),
-                    cityWindSpeed = "${weather.windResponse.speed} М/С",
-                    icon = weather.weatherTypeInformation.first().icon
-                )
-                repository.updateCity(updatedCity)
-            }
-        }.forEach { it.await() }
-    }
-
-    private fun updateFavoritesBroadcast() {
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.cities().collect { cities ->
-                _favoritesUiState.update {
-                    it.copy(
-                        allCity = cities,
-                    )
-                }
-            }
-        }
-    }
+    
 
 
 
