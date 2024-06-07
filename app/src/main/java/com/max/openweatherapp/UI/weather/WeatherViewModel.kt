@@ -1,3 +1,6 @@
+package com.max.openweatherapp.UI.weather
+
+
 class WeatherViewModel(private val cityRepository: CityRepository) {
     private val _weatherUiState: MutableStateFlow<WeatherUiState> =
         MutableStateFlow(WeatherUiState())
