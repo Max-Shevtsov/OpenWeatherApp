@@ -49,14 +49,14 @@ class FavoritesRepository(
         //        updateWeatherJobs.forEach { it.await() }
         
     cities.map { city ->
-        viewModelScope.async(Dispatchers.IO) {
+        lifecycleScope.async(Dispatchers.IO) {
             val weather = networkDataSource.getBroadcast(city.cityLat, city.cityLon)
             val updatedCity = city.copy(
                 cityTemp = kelvinToCelsiusConverter(weather.weatherParamsResponse.temp),
                 cityWindSpeed = "${weather.windResponse.speed} М/С",
                 icon = weather.weatherTypeInformation.first().icon
             )
-            localDataSource.updateCity(updatedCity)
+            updateCity(updatedCity)
         }
     }.forEach { it.await() }
 }
