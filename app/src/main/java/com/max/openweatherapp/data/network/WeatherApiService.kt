@@ -9,10 +9,7 @@ import retrofit2.http.Query
 
 private const val BASE_URL = "https://api.openweathermap.org"
 const val DEFAULT_LIMIT = 1
-val retrofit = Retrofit.Builder()
-    .addConverterFactory(GsonConverterFactory.create())
-    .baseUrl(BASE_URL)
-    .build()
+
 
 interface WeatherApiService {
 
@@ -33,8 +30,14 @@ interface WeatherApiService {
 
 object WeatherApi {
 
+    val retrofit = Retrofit.Builder()
+    .addConverterFactory(GsonConverterFactory.create())
+    .baseUrl(BASE_URL)
+    .build()
+
     val retrofitService: WeatherApiService by lazy {
         retrofit.create(WeatherApiService::class.java)
     }
+    
 }
 
