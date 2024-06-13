@@ -9,8 +9,8 @@ import com.max.openweatherapp.data.room.cityDataSource.City
 import com.max.openweatherapp.databinding.ItemWeatherBoradcastBinding
 
 
-class WeatherBroadcastsAdapter(private val onClick: (city: City) -> Unit ) :
-    ListAdapter<City, WeatherBroadcastsAdapter.ViewHolder>(ALL_CITY) {
+class FavoritesBroadcastsAdapter(private val onClick: (city: FavoriteCity) -> Unit ) :
+    ListAdapter<FavoriteCity, FavoritesBroadcastsAdapter.ViewHolder>(DIFFUTIL) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -28,16 +28,7 @@ class WeatherBroadcastsAdapter(private val onClick: (city: City) -> Unit ) :
         private val binding: ItemWeatherBoradcastBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-
-//        init {
-//            binding.root.setOnClickListener {
-//                currentCity?.let {
-//                    onClick(it)
-//                }
-//            }
-//        }
-
-        fun bind(city: City, onClick: (City)-> Unit) {              //onClick: (city) -> Unit)
+        fun bind(city: FavoriteCity, onClick: (FavoriteCity)-> Unit) {              
             
 
             with(binding) {
@@ -52,13 +43,13 @@ class WeatherBroadcastsAdapter(private val onClick: (city: City) -> Unit ) :
     }
 
     companion object {
-        private val ALL_CITY = object : DiffUtil.ItemCallback<City>() {
+        private val DIFFUTIL = object : DiffUtil.ItemCallback<FavoriteCity>() {
 
-            override fun areItemsTheSame(oldItem: City, newItem: City): Boolean {
+            override fun areItemsTheSame(oldItem: FavoriteCity, newItem: FavoriteCity): Boolean {
                 return oldItem.cityId == newItem.cityId
             }
 
-            override fun areContentsTheSame(oldItem: City, newItem: City): Boolean {
+            override fun areContentsTheSame(oldItem: FavoriteCity, newItem: FavoriteCity): Boolean {
                 return oldItem == newItem
             }
         }
