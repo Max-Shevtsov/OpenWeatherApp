@@ -1,4 +1,4 @@
-package com.max.openweatherapp.adapters
+package com.max.openweatherapp.UI.favorites
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

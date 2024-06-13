@@ -40,9 +40,8 @@ class FavoritesFragment : Fragment(R.layout.favorites_fragment) {
         _binding = FavoritesFragmentBinding.inflate(inflater, container, false)
         val view = binding.root
 
-        adapter = WeatherBroadcastsAdapter { city ->
+        adapter = FavoritesBroadcastsAdapter { city ->
 
-            viewModel.updateWeatherBroadcast(city)
             parentFragmentManager.commit {
                 replace<WeatherFragment>(R.id.fragment_container_view)
             }
