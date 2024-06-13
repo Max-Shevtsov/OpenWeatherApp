@@ -13,8 +13,6 @@ class MainViewModel(
     private val cityRepository: CityRepository,
     ) : ViewModel() {
 
-    
-
 
     fun getWeatherBroadcast(city: String) {
         cityRepository.getWeatherBroadcast(city)

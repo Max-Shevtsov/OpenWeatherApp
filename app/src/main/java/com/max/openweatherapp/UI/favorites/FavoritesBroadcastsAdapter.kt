@@ -5,11 +5,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.max.openweatherapp.data.room.cityDataSource.City
 import com.max.openweatherapp.databinding.ItemWeatherBoradcastBinding
 
 
-class FavoritesBroadcastsAdapter(private val onClick: (city: FavoriteCity) -> Unit ) :
+class FavoritesBroadcastsAdapter(private val onClick: (favoriteCity: FavoriteCity) -> Unit ) :
     ListAdapter<FavoriteCity, FavoritesBroadcastsAdapter.ViewHolder>(DIFFUTIL) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -19,8 +18,8 @@ class FavoritesBroadcastsAdapter(private val onClick: (city: FavoriteCity) -> Un
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val city = getItem(position)
-        holder.bind(city, onClick)
+        val favoriteCity = getItem(position)
+        holder.bind(favoriteCity, onClick)
 
     }
 
@@ -28,14 +27,14 @@ class FavoritesBroadcastsAdapter(private val onClick: (city: FavoriteCity) -> Un
         private val binding: ItemWeatherBoradcastBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(city: FavoriteCity, onClick: (FavoriteCity)-> Unit) {              
+        fun bind(favoriteCity: FavoriteCity, onClick: (FavoriteCity)-> Unit) {              
             
 
             with(binding) {
-                itemCityName.text = city.cityName
-                itemCityTemp.text = city.cityTemp
-                itemCityWindSpeed.text = city.cityWindSpeed
-                root.setOnClickListener { onClick(city)
+                itemCityName.text = favoriteCity.cityName
+                itemCityTemp.text = favoriteCity.cityTemp
+                itemCityWindSpeed.text = favoriteCity.cityWindSpeed
+                root.setOnClickListener { onClick(favoriteCity)
 
                 }
             }
