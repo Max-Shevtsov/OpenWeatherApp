@@ -1,7 +1,7 @@
 package com.max.openweatherapp.data.network
 
-import com.max.openweatherapp.model.CoordinatesOfCityResponse
-import com.max.openweatherapp.model.WeatherBroadcastResponse
+import com.max.openweatherapp.data.network.model.CoordinatesOfCityResponse
+import com.max.openweatherapp.data.network.model.WeatherBroadcastResponse
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
@@ -9,7 +9,7 @@ import retrofit2.http.Query
 
 private const val BASE_URL = "https://api.openweathermap.org"
 const val DEFAULT_LIMIT = 1
-private val retrofit = Retrofit.Builder()
+val retrofit = Retrofit.Builder()
     .addConverterFactory(GsonConverterFactory.create())
     .baseUrl(BASE_URL)
     .build()
@@ -31,4 +31,10 @@ interface WeatherApiService {
     ):List<CoordinatesOfCityResponse>
 }
 
+object WeatherApi {
+
+    val retrofitService: WeatherApiService by lazy {
+        retrofit.create(WeatherApiService::class.java)
+    }
+}
 

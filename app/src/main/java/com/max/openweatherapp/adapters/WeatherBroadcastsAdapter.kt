@@ -5,11 +5,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.max.openweatherapp.data.room.cityDataSource.City
 import com.max.openweatherapp.databinding.ItemWeatherBoradcastBinding
-import com.max.openweatherapp.room.City
-import com.max.openweatherapp.room.CityRepository
 
-class WeatherBroadcastsAdapter(private val onClick: (city:City) -> Unit ) :
+
+class WeatherBroadcastsAdapter(private val onClick: (city: City) -> Unit ) :
     ListAdapter<City, WeatherBroadcastsAdapter.ViewHolder>(ALL_CITY) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

@@ -10,8 +10,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import com.max.openweatherapp.MainViewModel
+import com.max.openweatherapp.viewModel
 import com.max.openweatherapp.R
 import com.max.openweatherapp.UI.WeatherType
 import com.max.openweatherapp.databinding.WeatherFragmentBinding
@@ -24,8 +25,8 @@ class WeatherFragment : Fragment(R.layout.weather_fragment), LoadIcon {
     private var _binding: WeatherFragmentBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: MainViewModel by activityViewModels {
-        MainViewModel.Factory
+    private val viewModel: viewModel by viewModels {
+        viewModel.Factory
     }
 
     override fun onCreateView(

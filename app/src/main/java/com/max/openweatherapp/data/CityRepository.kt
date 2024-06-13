@@ -1,12 +1,18 @@
 package com.max.openweatherapp.data
 
+import android.util.Log
+import com.max.openweatherapp.data.network.WeatherApi
+import com.max.openweatherapp.data.network.WeatherApiService
+import com.max.openweatherapp.data.room.cityDataSource.City
+import com.max.openweatherapp.data.room.cityDataSource.CityDao
+import com.max.openweatherapp.data.room.favoritesDataSource.FavoriteCityDao
+import kelvinToCelsiusConverter
 import kotlinx.coroutines.flow.Flow
 
 class CityRepository(
-    private val localDataSource: CityDao
-    private val networkDataSource: WeatherApiService  // пеерименовать в NetworkDataSource
+    private val localDataSource: CityDao,
+    private val networkDataSource: WeatherApi,  // пеерименовать в NetworkDataSource
 ) {
-
     suspend fun insert(city: City) {
         localDataSource.insert(city)
     }

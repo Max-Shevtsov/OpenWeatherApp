@@ -13,4 +13,22 @@ import kotlinx.coroutines.launch
 @Database(entities = [City::class], version = 1, exportSchema = false)
 abstract class CityDatabase : RoomDatabase() {
     abstract fun cityDao(): CityDao
+    companion object {
+        @Volatile
+        private var INSTANCE: CityDatabase? = null
+        fun getInstance(context: Context): CityDatabase {
+            return INSTANCE ?: synchronized(this) {
+                val instance = Room.databaseBuilder(
+                    context.applicationContext,
+                    CityDatabase::class.java,
+                    "city_database"
+                )
+                    .fallbackToDestructiveMigration()
+                    .build()
+                Log.e("!!!", "Database created")
+                INSTANCE = instance
+                instance
+            }
+        }
+    }
 }

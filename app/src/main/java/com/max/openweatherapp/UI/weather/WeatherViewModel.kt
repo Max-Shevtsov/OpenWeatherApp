@@ -1,5 +1,11 @@
 package com.max.openweatherapp.UI.weather
 
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.CreationExtras
+import com.max.openweatherapp.data.CityRepository
+import com.max.openweatherapp.data.FavoritesRepository
+
 
 class WeatherViewModel(
     private val cityRepository: CityRepository,
@@ -69,7 +75,7 @@ class WeatherViewModel(
                 if (modelClass.isAssignableFrom(WeatherViewModel::class.java)) {
                     val cityRepository = CityRepository()
                     val favoritesRepository = FavoritesRepository()
-                    return MainViewModel(
+                    return WeatherViewModel(
                         cityRepository,
                         favoritesRepository,
                     ) as T

@@ -1,8 +1,28 @@
 package com.max.openweatherapp.UI.favorites
 
+import android.util.Log
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
+import com.max.openweatherapp.UI.FavoritesUiState
+import com.max.openweatherapp.data.FavoritesRepository
+import com.max.openweatherapp.data.network.WeatherApiService
+import com.max.openweatherapp.data.network.retrofit
+import com.max.openweatherapp.data.room.cityDataSource.CityDao
+import com.max.openweatherapp.data.room.favoritesDataSource.FavoriteCityDao
+import com.max.openweatherapp.data.room.favoritesDataSource.FavoriteCityDatabase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import java.io.IOException
+
 class FavoritesViewModel(
     private val favoritesRepository: FavoritesRepository,
-) {
+) : ViewModel() {
     private val _favoritesUiState: MutableStateFlow<FavoritesUiState> =
         MutableStateFlow(FavoritesUiState())
     val favoritesUiState: StateFlow<FavoritesUiState> = _favoritesUiState.asStateFlow()
@@ -14,7 +34,7 @@ class FavoritesViewModel(
 
     fun refreshWeather() {
         viewModelScope.launch {
-            try{
+            try {
                 _favoritesUiState.update {
                     it.copy(isLoading = true)
                 }
@@ -22,13 +42,13 @@ class FavoritesViewModel(
                 _favoritesUiState.update {
                     it.copy(isLoading = false)
                 }
-            } catch(e: IOExcetption) {
+            } catch (e: IOException) {
                 _favoritesUiState.update {
                     val message = e.message
-                    is.copy = (errorMessage = message)
+                    it.copy(errorMessage = message)
                 }
             }
-            
+
         }
     }
 
@@ -51,9 +71,9 @@ class FavoritesViewModel(
                 modelClass: Class<T>,
                 extras: CreationExtras
             ): T {
-                if (modelClass.isAssignableFrom(WeatherViewModel::class.java)) {
+                if (modelClass.isAssignableFrom(FavoritesViewModel::class.java)) {
                     val favoritesRepository = FavoritesRepository()
-                    return MainViewModel(
+                    return FavoritesViewModel(
                         favoritesRepository,
                     ) as T
                 }

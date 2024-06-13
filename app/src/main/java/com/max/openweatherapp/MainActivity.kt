@@ -2,29 +2,18 @@ package com.max.openweatherapp
 
 import FavoritesFragment
 import WeatherFragment
-import android.annotation.SuppressLint
 import android.app.SearchManager
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
-import android.view.MenuItem
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.add
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import com.max.openweatherapp.databinding.ActivityMainBinding
-import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.max.openweatherapp.adapters.WeatherBroadcastsAdapter
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 
 class MainActivity : AppCompatActivity() {
@@ -33,8 +22,8 @@ class MainActivity : AppCompatActivity() {
         get() = viewBinding!!
 
 
-    private val viewModel: MainViewModel by viewModels {
-        MainViewModel.Factory
+    private val viewModel: viewModel by viewModels {
+        viewModel.Factory
     }
 
 
