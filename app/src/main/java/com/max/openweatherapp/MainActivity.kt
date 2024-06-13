@@ -55,9 +55,9 @@ class MainActivity : AppCompatActivity() {
         if (Intent.ACTION_SEARCH == intent.action) {
             intent.getStringExtra(SearchManager.QUERY)?.also { query ->
                 viewModel.getWeatherBroadcast(query)
-                // добавить навигацию к weatherFragment?
                 supportFragmentManager.commit {
                     replace<WeatherFragment>(R.id.fragment_container_view)
+                    addToBackStack()
                 }
             }
         }
@@ -67,9 +67,9 @@ class MainActivity : AppCompatActivity() {
         binding.toolBar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.action_favorites -> {
-                    //nav to favorites_fragment
                     supportFragmentManager.commit {
                         replace<FavoritesFragment>(R.id.fragment_container_view)
+                        addToBackStack()
                     }
                     true
                 }

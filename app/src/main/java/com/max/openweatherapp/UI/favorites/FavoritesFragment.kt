@@ -44,6 +44,7 @@ class FavoritesFragment : Fragment(R.layout.favorites_fragment) {
 
             parentFragmentManager.commit {
                 replace<WeatherFragment>(R.id.fragment_container_view)
+                addToBackStack()
             }
         }
 
