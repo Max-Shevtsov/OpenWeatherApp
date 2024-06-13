@@ -66,21 +66,25 @@ class FavoritesViewModel(
     }
 
     companion object {
-        val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(
-                modelClass: Class<T>,
-                extras: CreationExtras
-            ): T {
-                if (modelClass.isAssignableFrom(FavoritesViewModel::class.java)) {
-                    val favoritesRepository = FavoritesRepository()
-                    return FavoritesViewModel(
-                        favoritesRepository,
-                    ) as T
+        fun getFactory(context:Context):ViewModelProvider.Factory {
+            return object : ViewModelProvider.Factory {
+                override fun <T : ViewModel> create(
+                    modelClass: Class<T>,
+                    extras: CreationExtras
+                ): T {
+                    if (modelClass.isAssignableFrom(FavoritesViewModel::class.java)) {
+                        val favoritesRepository = FavoritesRepository(
+                            localDataSource = FavoriteCityDatabase.getInstance(context),
+                            networdataSource = WeatherApi.retrofitService
+                        )
+                        return FavoritesViewModel(
+                            favoritesRepository,
+                        ) as T
+                    }
+                    throw IllegalArgumentException("Unknown ViewModel")
                 }
-                throw IllegalArgumentException("Unknown ViewModel")
             }
-
-        }
+        } 
     }
 
 }

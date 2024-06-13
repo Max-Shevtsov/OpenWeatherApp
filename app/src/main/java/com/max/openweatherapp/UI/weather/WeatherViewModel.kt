@@ -67,22 +67,32 @@ class WeatherViewModel(
     }
 
     companion object {
-        val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(
-                modelClass: Class<T>,
-                extras: CreationExtras
-            ): T {
-                if (modelClass.isAssignableFrom(WeatherViewModel::class.java)) {
-                    val cityRepository = CityRepository()
-                    val favoritesRepository = FavoritesRepository()
-                    return WeatherViewModel(
-                        cityRepository,
-                        favoritesRepository,
-                    ) as T
-                }
-                throw IllegalArgumentException("Unknown ViewModel")
-            }
+        fun getFactory(context:Context):ViewModelProvider.Factory {
+            return object : ViewModelProvider.Factory {
+                override fun <T : ViewModel> create(
+                    modelClass: Class<T>,
+                    extras: CreationExtras
+                ): T {
+                    if (modelClass.isAssignableFrom(WeatherViewModel::class.java)) {
 
-        }
+                        val cityRepository = CityRepository(
+                            localDataSource = CityDatabase.getInstance(context),
+                            networdataSource = WeatherApi.retrofitService
+                        )
+
+                        val favoritesRepository = FavoritesRepository(
+                            localDataSource = FavoriteCityDatabase.getInstance(context),
+                            networdataSource = WeatherApi.retrofitService
+                        )
+                        
+                        return WeatherViewModel(
+                            cityRepository, 
+                            favoritesRepository
+                        ) as T
+                    }
+                    throw IllegalArgumentException("Unknown ViewModel")
+                }
+            }
+        } 
     }
 }
