@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 
 class CityRepository(
     private val localDataSource: CityDao,
-    private val networkDataSource: WeatherApi,  // пеерименовать в NetworkDataSource
+    private val networkDataSource: WeatherApiService,  // пеерименовать в NetworkDataSource
 ) {
     suspend fun insert(city: City) {
         localDataSource.insert(city)

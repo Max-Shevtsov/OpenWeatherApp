@@ -1,4 +1,4 @@
-package com.max.openweatherapp.UI.favorites
+package com.max.openweatherapp.ui.favorites
 
 import android.os.Bundle
 import android.util.Log
@@ -13,10 +13,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.max.openweatherapp.viewModel
 import com.max.openweatherapp.R
-import com.max.openweatherapp.UI.weather.WeatherFragment
-import com.max.openweatherapp.adapters.WeatherBroadcastsAdapter
+import com.max.openweatherapp.ui.weather.WeatherFragment
 import com.max.openweatherapp.databinding.FavoritesFragmentBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -26,12 +24,12 @@ class FavoritesFragment : Fragment(R.layout.favorites_fragment) {
     private var _binding: FavoritesFragmentBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var adapter: WeatherBroadcastsAdapter
+    private lateinit var adapter: FavoritesBroadcastsAdapter
 
-    private val viewModel: FavoritesViewModel by viewModels{
-        viewModel.Factory
+    private val favoritesViewModel: FavoritesViewModel by viewModels {
+        FavoritesViewModel.createFactory(requireContext())
     }
-    
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -40,11 +38,11 @@ class FavoritesFragment : Fragment(R.layout.favorites_fragment) {
         _binding = FavoritesFragmentBinding.inflate(inflater, container, false)
         val view = binding.root
 
-        adapter = FavoritesBroadcastsAdapter { city ->
+        adapter = FavoritesBroadcastsAdapter {
 
             parentFragmentManager.commit {
                 replace<WeatherFragment>(R.id.fragment_container_view)
-                addToBackStack()
+                addToBackStack("WeatherFragment")
             }
         }
 
@@ -68,7 +66,7 @@ class FavoritesFragment : Fragment(R.layout.favorites_fragment) {
 
     private fun renderState() {
         lifecycleScope.launch(Dispatchers.Main) {
-            viewModel.favoritesUiState.collect { state ->
+            favoritesViewModel.favoritesUiState.collect { state ->
                 adapter.submitList(state.allCity)
                 if (!state.isLoading)
                     binding.swipeRefresh.isRefreshing = false
@@ -82,7 +80,7 @@ class FavoritesFragment : Fragment(R.layout.favorites_fragment) {
     private fun initListeners() {
         binding.swipeRefresh.setOnRefreshListener {
             Log.e("!!!", "onRefresh called from SwipeRefreshLayout")
-            viewModel.refreshWeather()
+            favoritesViewModel.refreshWeather()
 
         }
     }

@@ -1,6 +1,6 @@
-package com.max.openweatherapp.UI
+package com.max.openweatherapp.ui
 
-import com.max.openweatherapp.room.City
+import com.max.openweatherapp.data.room.cityDataSource.City
 
 data class WeatherUiState(
     //var result: WeatherBroadcastResponse? = null,

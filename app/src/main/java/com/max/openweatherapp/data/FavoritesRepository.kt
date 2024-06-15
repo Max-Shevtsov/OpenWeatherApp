@@ -2,6 +2,7 @@ package com.max.openweatherapp.data
 
 import com.max.openweatherapp.data.network.WeatherApiService
 import com.max.openweatherapp.data.room.cityDataSource.City
+import com.max.openweatherapp.data.room.favoritesDataSource.FavoriteCity
 import com.max.openweatherapp.data.room.favoritesDataSource.FavoriteCityDao
 import kelvinToCelsiusConverter
 import kotlinx.coroutines.CoroutineScope
@@ -14,7 +15,7 @@ class FavoritesRepository(
     private val networkDataSource: WeatherApiService,  // пеерименовать в NetworkDataSource
 ) {
 
-    fun cities(): Flow<List<City>> {
+    fun cities(): Flow<List<FavoriteCity>> {
         return localDataSource.getAlphabetizedCity()
     }
 
@@ -26,15 +27,15 @@ class FavoritesRepository(
         localDataSource.delete(city)
     }
 
-    suspend fun updateCity(city: City) {
+    suspend fun updateCity(city: FavoriteCity) {
         localDataSource.updateCity(city)
     }
 
-    suspend fun getCityById(cityId: Long): City {
+    suspend fun getCityById(cityId: Long): FavoriteCity {
         return localDataSource.getCityById(cityId)
     }
 
-    suspend fun updateCitiesWeather(cities: List<City>) {
+    suspend fun updateCitiesWeather(cities: List<FavoriteCity>) {
         //        val updateWeatherJobs = mutableListOf<Deferred<Unit>>()
         //        cities.forEach { city ->
         //            val updatedWeatherResult = viewModelScope.async(Dispatchers.IO) {

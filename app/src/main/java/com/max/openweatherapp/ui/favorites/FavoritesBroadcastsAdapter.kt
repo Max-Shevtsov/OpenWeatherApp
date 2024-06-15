@@ -1,10 +1,11 @@
-package com.max.openweatherapp.UI.favorites
+package com.max.openweatherapp.ui.favorites
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.max.openweatherapp.data.room.favoritesDataSource.FavoriteCity
 import com.max.openweatherapp.databinding.ItemWeatherBoradcastBinding
 
 

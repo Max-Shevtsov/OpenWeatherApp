@@ -1,7 +1,6 @@
 package com.max.openweatherapp
 
-import FavoritesFragment
-import WeatherFragment
+
 import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
@@ -14,6 +13,8 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import com.max.openweatherapp.databinding.ActivityMainBinding
+import com.max.openweatherapp.ui.favorites.FavoritesFragment
+import com.max.openweatherapp.ui.weather.WeatherFragment
 
 
 class MainActivity : AppCompatActivity() {
@@ -22,8 +23,8 @@ class MainActivity : AppCompatActivity() {
         get() = viewBinding!!
 
 
-    private val viewModel: viewModel by viewModels {
-        viewModel.Factory
+    private val viewModel: MainViewModel by viewModels {
+        MainViewModel.createFactory(this)
     }
 
 
@@ -36,6 +37,7 @@ class MainActivity : AppCompatActivity() {
         val intent = intent
         supportFragmentManager.commit {
             replace<WeatherFragment>(R.id.fragment_container_view)
+            addToBackStack("WeatherFragment")
         }
 
         setContentView(view)
@@ -57,7 +59,7 @@ class MainActivity : AppCompatActivity() {
                 viewModel.getWeatherBroadcast(query)
                 supportFragmentManager.commit {
                     replace<WeatherFragment>(R.id.fragment_container_view)
-                    addToBackStack()
+                    addToBackStack("WeatherFragment")
                 }
             }
         }
@@ -69,7 +71,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.action_favorites -> {
                     supportFragmentManager.commit {
                         replace<FavoritesFragment>(R.id.fragment_container_view)
-                        addToBackStack()
+                        addToBackStack("FavoritesFragment")
                     }
                     true
                 }

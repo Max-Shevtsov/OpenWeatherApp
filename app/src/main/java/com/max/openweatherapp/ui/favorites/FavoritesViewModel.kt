@@ -1,16 +1,14 @@
-package com.max.openweatherapp.UI.favorites
+package com.max.openweatherapp.ui.favorites
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
-import com.max.openweatherapp.UI.FavoritesUiState
+import com.max.openweatherapp.ui.FavoritesUiState
 import com.max.openweatherapp.data.FavoritesRepository
-import com.max.openweatherapp.data.network.WeatherApiService
-import com.max.openweatherapp.data.network.retrofit
-import com.max.openweatherapp.data.room.cityDataSource.CityDao
-import com.max.openweatherapp.data.room.favoritesDataSource.FavoriteCityDao
+import com.max.openweatherapp.data.network.WeatherApi
 import com.max.openweatherapp.data.room.favoritesDataSource.FavoriteCityDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -66,7 +64,7 @@ class FavoritesViewModel(
     }
 
     companion object {
-        fun getFactory(context:Context):ViewModelProvider.Factory {
+        fun createFactory(context: Context):ViewModelProvider.Factory {
             return object : ViewModelProvider.Factory {
                 override fun <T : ViewModel> create(
                     modelClass: Class<T>,
@@ -74,8 +72,8 @@ class FavoritesViewModel(
                 ): T {
                     if (modelClass.isAssignableFrom(FavoritesViewModel::class.java)) {
                         val favoritesRepository = FavoritesRepository(
-                            localDataSource = FavoriteCityDatabase.getInstance(context),
-                            networdataSource = WeatherApi.retrofitService
+                            localDataSource = FavoriteCityDatabase.getInstance(context).favoriteCityDao(),
+                            networkDataSource = WeatherApi.retrofitService
                         )
                         return FavoritesViewModel(
                             favoritesRepository,
@@ -84,7 +82,28 @@ class FavoritesViewModel(
                     throw IllegalArgumentException("Unknown ViewModel")
                 }
             }
-        } 
+        }
+
+//        val Factory: ViewModelProvider.Factory =
+//            object : ViewModelProvider.Factory {
+//                override fun <T : ViewModel> create(
+//                    modelClass: Class<T>,
+//                    extras: CreationExtras
+//                ): T {
+//                    if (modelClass.isAssignableFrom(FavoritesViewModel::class.java)) {
+//                        val application = checkNotNull(extras[APPLICATION_KEY])
+//                        val favoritesRepository = FavoritesRepository(
+//                            localDataSource = FavoriteCityDatabase.getInstance(application.applicationContext)
+//                                .favoriteCityDao(),
+//                            networkDataSource = WeatherApi.retrofitService
+//                        )
+//                        return FavoritesViewModel(
+//                            favoritesRepository = favoritesRepository
+//                        ) as T
+//                    }
+//                    throw IllegalArgumentException("Unknown ViewModel")
+//                }
+//            }
     }
 
 }

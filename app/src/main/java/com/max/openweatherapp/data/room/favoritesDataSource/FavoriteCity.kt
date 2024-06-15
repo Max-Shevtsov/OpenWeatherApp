@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "city_table")
+@Entity(tableName = "favorite_city_table")
 data class FavoriteCity(
     @PrimaryKey(autoGenerate = true)
     val cityId: Long = 0L,

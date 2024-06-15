@@ -1,34 +1,28 @@
-package com.max.openweatherapp.UI.weather
+package com.max.openweatherapp.ui.weather
 
 
-import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import com.max.openweatherapp.viewModel
 import com.max.openweatherapp.R
-import com.max.openweatherapp.UI.WeatherType
 import com.max.openweatherapp.databinding.WeatherFragmentBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import loadWeatherTypePicture
 
 
-class WeatherFragment : Fragment(R.layout.weather_fragment), LoadIcon {
+class WeatherFragment : Fragment(R.layout.weather_fragment) {
 
     private var _binding: WeatherFragmentBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: viewModel by viewModels {
-        viewModel.Factory
+    private val weatherViewModel: WeatherViewModel by viewModels {
+        WeatherViewModel.createFactory(requireContext())
     }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -49,12 +43,12 @@ class WeatherFragment : Fragment(R.layout.weather_fragment), LoadIcon {
 
     private fun renderState() {
         lifecycleScope.launch(Dispatchers.Main) {
-            viewModel.weatherUiState.collect { state ->
+            weatherViewModel.weatherUiState.collect { state ->
                 binding.cityName.text = state.city?.cityName
                 binding.cityTemp.text = state.city?.cityTemp
                 binding.cityWindSpeed.text = state.city?.cityWindSpeed
                 binding.starButton.isChecked = state.city?.isStarred ?: false
-                super.loadWeatherTypePicture(state.city?.icon, binding.weatherType)
+                loadWeatherTypePicture(state.city?.icon, binding.weatherType)
             }
         }
     }
@@ -63,9 +57,9 @@ class WeatherFragment : Fragment(R.layout.weather_fragment), LoadIcon {
 
         binding.starButton.setOnClickListener {
             if (binding.starButton.isChecked) {
-                viewModel.putCityIntoFavorites()
+                weatherViewModel.putCityIntoFavorites()
             }else {
-                viewModel.deleteCityFromFavorites()
+                weatherViewModel.deleteCityFromFavorites()
             }
         }
     }
@@ -76,3 +70,5 @@ class WeatherFragment : Fragment(R.layout.weather_fragment), LoadIcon {
         _binding = null
     }
 }
+
+

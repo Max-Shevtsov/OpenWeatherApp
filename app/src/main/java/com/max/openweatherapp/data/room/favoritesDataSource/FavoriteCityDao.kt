@@ -14,17 +14,17 @@ interface FavoriteCityDao {
     suspend fun insert(city: City)
 
     @Update
-    suspend fun updateCity(cities: City )
+    suspend fun updateCity(cities: FavoriteCity )
 
     @Delete
     suspend fun delete(city: City)
 
-    @Query("SELECT * FROM city_table WHERE cityId= :cityId")
-    suspend fun getCityById(cityId: Long): City
+    @Query("SELECT * FROM favorite_city_table WHERE cityId= :cityId")
+    suspend fun getCityById(cityId: Long): FavoriteCity
 
-    @Query("SELECT * FROM city_table ORDER BY city_name ASC")
-    fun getAlphabetizedCity(): Flow<List<City>>
+    @Query("SELECT * FROM favorite_city_table ORDER BY city_name ASC")
+    fun getAlphabetizedCity(): Flow<List<FavoriteCity>>
 
-    @Query("DELETE FROM city_table")
+    @Query("DELETE FROM favorite_city_table")
     suspend fun deleteAll()
 }

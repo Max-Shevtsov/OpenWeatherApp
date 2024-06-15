@@ -5,10 +5,7 @@ import android.util.Log
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.sqlite.db.SupportSQLiteDatabase
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+
 
 @Database(entities = [FavoriteCity::class], version = 1, exportSchema = false)
 abstract class FavoriteCityDatabase : RoomDatabase() {
@@ -22,7 +19,7 @@ abstract class FavoriteCityDatabase : RoomDatabase() {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     FavoriteCityDatabase::class.java,
-                    "city_database"
+                    "favorite_city_database"
                 )
                     .fallbackToDestructiveMigration()
                     .build()
