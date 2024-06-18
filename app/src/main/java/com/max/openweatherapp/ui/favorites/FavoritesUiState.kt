@@ -1,4 +1,4 @@
-package com.max.openweatherapp.ui
+package com.max.openweatherapp.ui.favorites
 
 import com.max.openweatherapp.data.room.favoritesDataSource.FavoriteCity
 

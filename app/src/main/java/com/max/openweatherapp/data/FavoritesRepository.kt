@@ -19,11 +19,11 @@ class FavoritesRepository(
         return localDataSource.getAlphabetizedCity()
     }
 
-    suspend fun insert(city: City) {
+    suspend fun insert(city: FavoriteCity) {
         localDataSource.insert(city)
     }
 
-    suspend fun delete(city: City) {
+    suspend fun delete(city: FavoriteCity) {
         localDataSource.delete(city)
     }
 

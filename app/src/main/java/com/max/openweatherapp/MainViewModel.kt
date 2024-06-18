@@ -10,6 +10,7 @@ import com.max.openweatherapp.ui.weather.WeatherViewModel
 import com.max.openweatherapp.data.CityRepository
 import com.max.openweatherapp.data.network.WeatherApi
 import com.max.openweatherapp.data.room.cityDataSource.CityDatabase
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.lang.IllegalArgumentException
 
@@ -20,7 +21,7 @@ class MainViewModel(
 
 
     fun getWeatherBroadcast(city: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             cityRepository.getWeatherBroadcast(city)
         }
     }
@@ -33,7 +34,7 @@ class MainViewModel(
                     modelClass: Class<T>,
                     extras: CreationExtras
                 ): T {
-                    if (modelClass.isAssignableFrom(WeatherViewModel::class.java)) {
+                    if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
                         val cityRepository = CityRepository(
                             localDataSource = CityDatabase.getInstance(context).cityDao(),
                             networkDataSource = WeatherApi.retrofitService

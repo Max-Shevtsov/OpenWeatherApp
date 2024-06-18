@@ -38,8 +38,8 @@ class FavoritesFragment : Fragment(R.layout.favorites_fragment) {
         _binding = FavoritesFragmentBinding.inflate(inflater, container, false)
         val view = binding.root
 
-        adapter = FavoritesBroadcastsAdapter {
-
+        adapter = FavoritesBroadcastsAdapter {favoriteCity ->
+            favoritesViewModel.favoriteCityToCityDatabase(favoriteCity)
             parentFragmentManager.commit {
                 replace<WeatherFragment>(R.id.fragment_container_view)
                 addToBackStack("WeatherFragment")

@@ -1,16 +1,15 @@
 package com.max.openweatherapp.ui.weather
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
-import com.max.openweatherapp.ui.WeatherUiState
 import com.max.openweatherapp.data.CityRepository
 import com.max.openweatherapp.data.FavoritesRepository
+import com.max.openweatherapp.data.mappers.toFavoriteCity
 import com.max.openweatherapp.data.network.WeatherApi
-import com.max.openweatherapp.data.room.cityDataSource.City
 import com.max.openweatherapp.data.room.cityDataSource.CityDatabase
 import com.max.openweatherapp.data.room.favoritesDataSource.FavoriteCityDatabase
 import kotlinx.coroutines.Dispatchers
@@ -19,7 +18,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.io.IOException
 
 
 class WeatherViewModel(
@@ -31,35 +29,23 @@ class WeatherViewModel(
         MutableStateFlow(WeatherUiState())
     val weatherUiState: StateFlow<WeatherUiState> = _weatherUiState.asStateFlow()
 
-    fun getWeatherBroadcast(city: String) {
-        viewModelScope.launch {
-            try {
-                val currentCity = cityRepository.getWeatherBroadcast(city)
+    init {
+        updateWeatherBroadcast()
+    }
 
-                if (cityRepository.databaseisEmpty()) {
-                    cityRepository.insert(currentCity)
-                } else {
-                    cityRepository.update(currentCity)
-                }
 
-                updateWeatherBroadcast(currentCity)
-
-            } catch (e: IOException) {
+    private fun updateWeatherBroadcast() {
+        viewModelScope.launch(Dispatchers.Default) {
+            cityRepository.get().collect { city ->
+                Log.e("!!!", "$city")
                 _weatherUiState.update {
-                    val message = e.message
-                    it.copy(errorMessage = message)
+                    it.copy(city = city)
                 }
             }
         }
     }
 
-    fun updateWeatherBroadcast(city: City) {
-        viewModelScope.launch {
-            _weatherUiState.update {
-                it.copy(city = city)
-            }
-        }
-    }
+
 
     fun putCityIntoFavorites() {
         viewModelScope.launch(Dispatchers.Default) {
@@ -70,7 +56,8 @@ class WeatherViewModel(
                     city = city,
                 )
             }
-            favoritesRepository.insert(city)
+
+            favoritesRepository.insert(city.toFavoriteCity())
         }
     }
 
@@ -78,7 +65,7 @@ class WeatherViewModel(
         viewModelScope.launch(Dispatchers.Default) {
             val city = (_weatherUiState.value.city) ?: return@launch
             city.isStarred = false
-            favoritesRepository.delete(city)
+            favoritesRepository.delete(city.toFavoriteCity())
         }
     }
 

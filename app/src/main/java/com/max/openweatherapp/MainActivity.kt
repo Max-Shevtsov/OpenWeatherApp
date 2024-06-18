@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
         get() = viewBinding!!
 
 
-    private val viewModel: MainViewModel by viewModels {
+    private val mainViewModel: MainViewModel by viewModels {
         MainViewModel.createFactory(this)
     }
 
@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity() {
 
         if (Intent.ACTION_SEARCH == intent.action) {
             intent.getStringExtra(SearchManager.QUERY)?.also { query ->
-                viewModel.getWeatherBroadcast(query)
+                mainViewModel.getWeatherBroadcast(query)
                 supportFragmentManager.commit {
                     replace<WeatherFragment>(R.id.fragment_container_view)
                     addToBackStack("WeatherFragment")

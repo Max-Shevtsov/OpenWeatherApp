@@ -11,13 +11,13 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface FavoriteCityDao {
     @Insert
-    suspend fun insert(city: City)
+    suspend fun insert(city: FavoriteCity)
 
     @Update
     suspend fun updateCity(cities: FavoriteCity )
 
     @Delete
-    suspend fun delete(city: City)
+    suspend fun delete(city: FavoriteCity)
 
     @Query("SELECT * FROM favorite_city_table WHERE cityId= :cityId")
     suspend fun getCityById(cityId: Long): FavoriteCity

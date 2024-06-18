@@ -18,8 +18,8 @@ import com.max.openweatherapp.data.room.favoritesDataSource.FavoriteCity
 //    }
 //}
 //extention static fun
-fun City.toFavoriteCity(): FavoriteCity {
-    return FavoriteCity(
+fun FavoriteCity.toCity(): City {
+    return City(
         cityId = cityId,
         cityName = cityName,
         cityTemp = cityTemp,

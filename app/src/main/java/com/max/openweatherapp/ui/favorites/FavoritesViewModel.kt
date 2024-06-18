@@ -6,9 +6,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
-import com.max.openweatherapp.ui.FavoritesUiState
+import com.max.openweatherapp.data.CityRepository
 import com.max.openweatherapp.data.FavoritesRepository
+import com.max.openweatherapp.data.mappers.toCity
 import com.max.openweatherapp.data.network.WeatherApi
+import com.max.openweatherapp.data.room.cityDataSource.City
+import com.max.openweatherapp.data.room.cityDataSource.CityDatabase
+import com.max.openweatherapp.data.room.favoritesDataSource.FavoriteCity
 import com.max.openweatherapp.data.room.favoritesDataSource.FavoriteCityDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,6 +23,7 @@ import kotlinx.coroutines.launch
 import java.io.IOException
 
 class FavoritesViewModel(
+    private val cityRepository: CityRepository,
     private val favoritesRepository: FavoritesRepository,
 ) : ViewModel() {
     private val _favoritesUiState: MutableStateFlow<FavoritesUiState> =
@@ -63,6 +68,12 @@ class FavoritesViewModel(
         }
     }
 
+    fun favoriteCityToCityDatabase(city: FavoriteCity) {
+            viewModelScope.launch(Dispatchers.Default) {
+                cityRepository.putInDatabase(city.toCity())
+            }
+    }
+
     companion object {
         fun createFactory(context: Context):ViewModelProvider.Factory {
             return object : ViewModelProvider.Factory {
@@ -71,12 +82,17 @@ class FavoritesViewModel(
                     extras: CreationExtras
                 ): T {
                     if (modelClass.isAssignableFrom(FavoritesViewModel::class.java)) {
+                        val cityRepository = CityRepository(
+                            localDataSource = CityDatabase.getInstance(context).cityDao(),
+                            networkDataSource = WeatherApi.retrofitService,
+                        )
                         val favoritesRepository = FavoritesRepository(
                             localDataSource = FavoriteCityDatabase.getInstance(context).favoriteCityDao(),
                             networkDataSource = WeatherApi.retrofitService
                         )
+
                         return FavoritesViewModel(
-                            favoritesRepository,
+                            cityRepository,favoritesRepository,
                         ) as T
                     }
                     throw IllegalArgumentException("Unknown ViewModel")

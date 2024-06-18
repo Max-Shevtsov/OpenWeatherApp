@@ -12,7 +12,6 @@ import com.max.openweatherapp.R
 import com.max.openweatherapp.databinding.WeatherFragmentBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import loadWeatherTypePicture
 
 
 class WeatherFragment : Fragment(R.layout.weather_fragment) {
@@ -48,7 +47,7 @@ class WeatherFragment : Fragment(R.layout.weather_fragment) {
                 binding.cityTemp.text = state.city?.cityTemp
                 binding.cityWindSpeed.text = state.city?.cityWindSpeed
                 binding.starButton.isChecked = state.city?.isStarred ?: false
-                loadWeatherTypePicture(state.city?.icon, binding.weatherType)
+                //loadWeatherTypePicture(state.city?.icon, binding.weatherType)
             }
         }
     }
