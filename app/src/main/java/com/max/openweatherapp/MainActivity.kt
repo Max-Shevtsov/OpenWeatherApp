@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.Menu
 import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
+import androidx.fragment.app.add
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import com.max.openweatherapp.databinding.ActivityMainBinding
@@ -35,10 +36,10 @@ class MainActivity : AppCompatActivity() {
         viewBinding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         val intent = intent
-        supportFragmentManager.commit {
-            replace<WeatherFragment>(R.id.fragment_container_view)
-            addToBackStack("WeatherFragment")
-        }
+        supportFragmentManager.beginTransaction()
+            .add(R.id.fragment_container_view, WeatherFragment())
+            .addToBackStack(null)
+            .commit()
 
         setContentView(view)
         setSupportActionBar(binding.toolBar)
@@ -57,10 +58,10 @@ class MainActivity : AppCompatActivity() {
         if (Intent.ACTION_SEARCH == intent.action) {
             intent.getStringExtra(SearchManager.QUERY)?.also { query ->
                 mainViewModel.getWeatherBroadcast(query)
-                supportFragmentManager.commit {
-                    replace<WeatherFragment>(R.id.fragment_container_view)
-                    addToBackStack("WeatherFragment")
-                }
+                supportFragmentManager.beginTransaction()
+                    .add(R.id.fragment_container_view, WeatherFragment())
+                    .addToBackStack(null)
+                    .commit()
             }
         }
     }
@@ -69,10 +70,10 @@ class MainActivity : AppCompatActivity() {
         binding.toolBar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.action_favorites -> {
-                    supportFragmentManager.commit {
-                        replace<FavoritesFragment>(R.id.fragment_container_view)
-                        addToBackStack("FavoritesFragment")
-                    }
+                    supportFragmentManager.beginTransaction()
+                        .add(R.id.fragment_container_view, FavoritesFragment())
+                        .addToBackStack(null)
+                        .commit()
                     true
                 }
 

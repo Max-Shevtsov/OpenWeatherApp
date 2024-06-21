@@ -12,6 +12,7 @@ import com.max.openweatherapp.R
 import com.max.openweatherapp.databinding.WeatherFragmentBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import loadWeatherTypePicture
 
 
 class WeatherFragment : Fragment(R.layout.weather_fragment) {
@@ -22,22 +23,19 @@ class WeatherFragment : Fragment(R.layout.weather_fragment) {
     private val weatherViewModel: WeatherViewModel by viewModels {
         WeatherViewModel.createFactory(requireContext())
     }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
         _binding = WeatherFragmentBinding.inflate(inflater, container, false)
-        val view = binding.root
-
-        initListeners()
-        renderState()
-
-        return view
+        return binding.root
     }
 
     override fun onViewCreated(view: View, sevedInstanceState: Bundle?) {
-
+        initListeners()
+        renderState()
     }
 
     private fun renderState() {
@@ -47,7 +45,7 @@ class WeatherFragment : Fragment(R.layout.weather_fragment) {
                 binding.cityTemp.text = state.city?.cityTemp
                 binding.cityWindSpeed.text = state.city?.cityWindSpeed
                 binding.starButton.isChecked = state.city?.isStarred ?: false
-                //loadWeatherTypePicture(state.city?.icon, binding.weatherType)
+                loadWeatherTypePicture(state.city?.icon, binding.weatherType)
             }
         }
     }
@@ -57,7 +55,7 @@ class WeatherFragment : Fragment(R.layout.weather_fragment) {
         binding.starButton.setOnClickListener {
             if (binding.starButton.isChecked) {
                 weatherViewModel.putCityIntoFavorites()
-            }else {
+            } else {
                 weatherViewModel.deleteCityFromFavorites()
             }
         }

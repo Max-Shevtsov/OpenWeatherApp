@@ -38,12 +38,12 @@ class FavoritesFragment : Fragment(R.layout.favorites_fragment) {
         _binding = FavoritesFragmentBinding.inflate(inflater, container, false)
         val view = binding.root
 
-        adapter = FavoritesBroadcastsAdapter {favoriteCity ->
+        adapter = FavoritesBroadcastsAdapter { favoriteCity ->
             favoritesViewModel.favoriteCityToCityDatabase(favoriteCity)
-            parentFragmentManager.commit {
-                replace<WeatherFragment>(R.id.fragment_container_view)
-                addToBackStack("WeatherFragment")
-            }
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container_view, WeatherFragment())
+                .addToBackStack(null)
+                .commit()
         }
 
         val dividerItemDecoration = DividerItemDecoration(context, RecyclerView.VERTICAL)
@@ -53,7 +53,7 @@ class FavoritesFragment : Fragment(R.layout.favorites_fragment) {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.addItemDecoration(dividerItemDecoration)
-        
+
         initListeners()
         renderState()
 
