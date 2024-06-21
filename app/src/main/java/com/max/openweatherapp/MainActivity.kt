@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
         val intent = intent
         supportFragmentManager.beginTransaction()
             .add(R.id.fragment_container_view, WeatherFragment())
-            .addToBackStack(null)
+            //.addToBackStack(null)
             .commit()
 
         setContentView(view)
@@ -59,8 +59,8 @@ class MainActivity : AppCompatActivity() {
             intent.getStringExtra(SearchManager.QUERY)?.also { query ->
                 mainViewModel.getWeatherBroadcast(query)
                 supportFragmentManager.beginTransaction()
-                    .add(R.id.fragment_container_view, WeatherFragment())
-                    .addToBackStack(null)
+                    .replace(R.id.fragment_container_view, WeatherFragment())
+                    //.addToBackStack(null)
                     .commit()
             }
         }
@@ -71,8 +71,8 @@ class MainActivity : AppCompatActivity() {
             when (it.itemId) {
                 R.id.action_favorites -> {
                     supportFragmentManager.beginTransaction()
-                        .add(R.id.fragment_container_view, FavoritesFragment())
-                        .addToBackStack(null)
+                        .replace(R.id.fragment_container_view, FavoritesFragment())
+                        //.addToBackStack(null)
                         .commit()
                     true
                 }
@@ -82,11 +82,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun replaceWeatherFragment() {
-
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+      override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.options_menu, menu)
 
         val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager

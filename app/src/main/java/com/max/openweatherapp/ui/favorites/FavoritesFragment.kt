@@ -42,7 +42,7 @@ class FavoritesFragment : Fragment(R.layout.favorites_fragment) {
             favoritesViewModel.favoriteCityToCityDatabase(favoriteCity)
             parentFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container_view, WeatherFragment())
-                .addToBackStack(null)
+//                .addToBackStack(null) throws NPE
                 .commit()
         }
 
