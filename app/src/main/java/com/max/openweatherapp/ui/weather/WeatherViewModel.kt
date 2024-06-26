@@ -36,10 +36,10 @@ class WeatherViewModel(
 
     private fun updateWeatherBroadcast() {
         viewModelScope.launch(Dispatchers.Default) {
-            cityRepository.get().collect { city ->
+            cityRepository.getCity().collect { city ->
                 Log.e("!!!", "$city")
                 _weatherUiState.update {
-                    it.copy(city = city)
+                    it.copy(city = city.firstOrNull())
                 }
             }
         }

@@ -8,7 +8,6 @@ import androidx.room.PrimaryKey
 data class FavoriteCity(
     @PrimaryKey(autoGenerate = false)
     val cityId: Long = 0L,
-
     @ColumnInfo(name = "city_name")
     val cityName: String = "",
 

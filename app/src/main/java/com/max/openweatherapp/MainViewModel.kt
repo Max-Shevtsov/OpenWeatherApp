@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
-import com.max.openweatherapp.ui.weather.WeatherViewModel
 import com.max.openweatherapp.data.CityRepository
 import com.max.openweatherapp.data.network.WeatherApi
 import com.max.openweatherapp.data.room.cityDataSource.CityDatabase
@@ -22,7 +21,7 @@ class MainViewModel(
 
     fun getWeatherBroadcast(city: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            cityRepository.getWeatherBroadcast(city)
+            cityRepository.searchWeatherByCityName(city)
         }
     }
 
