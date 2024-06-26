@@ -21,7 +21,7 @@ interface CityDao {
 //    suspend fun deleteById(cityId: Long)
 
     @Query("SELECT * FROM city_table")
-    fun get(): Flow<List<City>>
+    fun get(): Flow<City>
     
     @Query("SELECT (SELECT COUNT(*) FROM city_table) == 0")
     suspend fun databaseIsEmpty(): Boolean

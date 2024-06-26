@@ -21,7 +21,7 @@ class MainViewModel(
 
     fun getWeatherBroadcast(city: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            cityRepository.searchWeatherByCityName(city)
+            cityRepository.searchWeatherByCity(city)
         }
     }
 

@@ -70,7 +70,7 @@ class FavoritesViewModel(
 
     fun favoriteCityToCityDatabase(city: FavoriteCity) {
             viewModelScope.launch(Dispatchers.Default) {
-                cityRepository.putInDatabase(city.toCity())
+                cityRepository.insert(city.toCity())
             }
     }
 
