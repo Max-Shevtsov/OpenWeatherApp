@@ -2,7 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:elevation="20dp"
+    android:elevation="5dp"
+    android:background="@drawable/rectangle"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     
@@ -12,30 +13,25 @@
         android:hint="City"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
         
-    <Button
-        android:id="@+id/itemDeleteButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="delete"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
-
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/itemCityTemp"
-        android:hint="temperature"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:hint="temperature"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/itemCityName"/>
+        app:layout_constraintTop_toBottomOf="@+id/itemCityName" />
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView        
         android:id="@+id/itemCityWindSpeed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="68dp"
+        android:layout_marginStart="84dp"
+        android:layout_marginTop="50dp"
         android:hint="wind"
         app:layout_constraintStart_toEndOf="@id/itemCityTemp"
         app:layout_constraintTop_toBottomOf="@+id/itemCityName" />
