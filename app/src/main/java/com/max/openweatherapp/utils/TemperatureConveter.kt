@@ -1,4 +1,7 @@
-fun kelvinToCelsiusConverter(kelvinTemp: Double): String {
+fun kelvinToCelsiusConverter(kelvinTemp: Double?): String {
     val KELVIN_TO_CELSIUS = 273.15
-    return "${(kelvinTemp - KELVIN_TO_CELSIUS).toUInt()} C"
+    if (kelvinTemp != null) {
+        return "${(kelvinTemp - KELVIN_TO_CELSIUS).toUInt()} C"
+    } else return "X_X"
+
 }
