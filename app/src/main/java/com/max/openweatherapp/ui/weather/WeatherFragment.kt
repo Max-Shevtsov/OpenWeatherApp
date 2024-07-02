@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.max.openweatherapp.R
 import com.max.openweatherapp.databinding.WeatherFragmentBinding
+import kelvinToCelsiusConverter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import loadWeatherTypePicture
@@ -41,9 +42,9 @@ class WeatherFragment : Fragment(R.layout.weather_fragment) {
     private fun renderState() {
         lifecycleScope.launch(Dispatchers.Main) {
             weatherViewModel.weatherUiState.collect { state ->
-                binding.cityName.text = state.city?.cityName
-                binding.cityTemp.text = state.city?.cityTemp
-                binding.cityWindSpeed.text = state.city?.cityWindSpeed
+                binding.cityName.text = state.city?.name
+                binding.cityTemp.text = kelvinToCelsiusConverter(state.city?.weatherParams?.temp).toString()
+                binding.cityWindSpeed.text = state.city?.wind?.speed.toString()
                 binding.starButton.isChecked = state.city?.isStarred ?: false
                 loadWeatherTypePicture(state.city?.icon, binding.weatherType)
             }

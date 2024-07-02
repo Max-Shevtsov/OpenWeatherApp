@@ -32,9 +32,9 @@ class FavoritesBroadcastsAdapter(private val onClick: (favoriteCity: FavoriteCit
             
 
             with(binding) {
-                itemCityName.text = favoriteCity.cityName
-                itemCityTemp.text = favoriteCity.cityTemp
-                itemCityWindSpeed.text = favoriteCity.cityWindSpeed
+                itemCityName.text = favoriteCity.name
+                itemCityTemp.text = favoriteCity.weatherParams.temp.toString()
+                itemCityWindSpeed.text = favoriteCity.wind.speed.toString()
                 root.setOnClickListener { onClick(favoriteCity)
 
                 }
