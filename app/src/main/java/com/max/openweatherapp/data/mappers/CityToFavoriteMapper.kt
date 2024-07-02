@@ -21,12 +21,11 @@ import com.max.openweatherapp.data.room.favoritesDataSource.FavoriteCity
 fun City.toFavoriteCity(): FavoriteCity {
     return FavoriteCity(
         cityId = cityId,
-        cityName = cityName,
-        cityTemp = cityTemp,
-        cityWindSpeed = cityWindSpeed,
-        cityLat = cityLat,
-        cityLon = cityLon,
-        isStarred = isStarred,
+        coordinates = coordinates,
+        weatherParams = weatherParams,
+        wind = wind,
+        name = name,
         icon = icon,
+        isStarred = isStarred,
     )
 }

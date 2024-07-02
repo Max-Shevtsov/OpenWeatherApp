@@ -52,11 +52,14 @@ class FavoritesRepository(
 
         cities.map { city ->
             CoroutineScope(Dispatchers.IO).async {
-                val weather = networkDataSource.getBroadcast(city.cityLat, city.cityLon)
+                val weather = networkDataSource.getBroadcast(city.coordinates.lat, city.coordinates.lon)
                 val updatedCity = city.copy(
-                    cityTemp = kelvinToCelsiusConverter(weather.weatherParamsResponse.temp),
-                    cityWindSpeed = "${weather.windResponse.speed} М/С",
-                    icon = weather.weatherTypeInformation.first().icon
+                    weatherParams = weather.weatherParamsResponse,
+                    wind = weather.windResponse,
+                    icon = weather.weatherTypeInformation.firstOrNull()?.icon,
+//                    cityTemp = kelvinToCelsiusConverter(weather.weatherParamsResponse.temp),
+//                    cityWindSpeed = "${weather.windResponse.speed} М/С",
+//                    icon = weather.weatherTypeInformation.first().icon
                 )
                 updateCity(updatedCity)
             }

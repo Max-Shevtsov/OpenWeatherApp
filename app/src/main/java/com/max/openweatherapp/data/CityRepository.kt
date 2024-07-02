@@ -61,12 +61,11 @@ class CityRepository(
         val updatedCity = City(
             key = 0L,
             cityId = updatedCityId?:0,
-            cityName = city,
-            cityLat = coordinates.first().lat,
-            cityLon = coordinates.first().lon,
-            cityTemp = kelvinToCelsiusConverter(result.weatherParamsResponse.temp),
-            cityWindSpeed = "${result.windResponse.speed} М/С",
-            icon = result.weatherTypeInformation.first().icon,
+            coordinates = result.coordinates,
+            weatherParams = result.weatherParamsResponse,
+            wind = result.windResponse,
+            icon = result.weatherTypeInformation.firstOrNull()?.icon,
+            name = result.name
         )
         putInDatabase(updatedCity)
     }
