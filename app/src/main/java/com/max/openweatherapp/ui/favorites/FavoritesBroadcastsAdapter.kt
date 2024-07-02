@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.max.openweatherapp.data.room.favoritesDataSource.FavoriteCity
 import com.max.openweatherapp.databinding.ItemWeatherBoradcastBinding
+import kelvinToCelsiusConverter
 
 
 class FavoritesBroadcastsAdapter(private val onClick: (favoriteCity: FavoriteCity) -> Unit ) :
@@ -33,7 +34,7 @@ class FavoritesBroadcastsAdapter(private val onClick: (favoriteCity: FavoriteCit
 
             with(binding) {
                 itemCityName.text = favoriteCity.name
-                itemCityTemp.text = favoriteCity.weatherParams.temp.toString()
+                itemCityTemp.text = kelvinToCelsiusConverter(favoriteCity.weatherParams.temp)
                 itemCityWindSpeed.text = favoriteCity.wind.speed.toString()
                 root.setOnClickListener { onClick(favoriteCity)
 
