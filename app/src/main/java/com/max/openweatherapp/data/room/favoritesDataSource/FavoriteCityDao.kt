@@ -20,10 +20,10 @@ interface FavoriteCityDao {
     @Delete
     suspend fun delete(city: FavoriteCity)
 
-    @Query("SELECT * FROM favorite_city_table WHERE cityId= :cityId")
-    suspend fun getCityById(cityId: Long): FavoriteCity
+    @Query("SELECT * FROM favorite_city_table WHERE name= :name")
+    suspend fun getCityById(name: String): FavoriteCity
 
-    @Query("SELECT * FROM favorite_city_table ORDER BY city_name ASC")
+    @Query("SELECT * FROM favorite_city_table ORDER BY name ASC")
     fun getAlphabetizedCity(): Flow<List<FavoriteCity>>
 
     @Query("DELETE FROM favorite_city_table")

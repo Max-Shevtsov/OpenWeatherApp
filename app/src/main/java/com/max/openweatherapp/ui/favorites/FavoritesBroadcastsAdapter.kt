@@ -47,7 +47,7 @@ class FavoritesBroadcastsAdapter(private val onClick: (favoriteCity: FavoriteCit
         private val DIFFUTIL = object : DiffUtil.ItemCallback<FavoriteCity>() {
 
             override fun areItemsTheSame(oldItem: FavoriteCity, newItem: FavoriteCity): Boolean {
-                return oldItem.cityId == newItem.cityId
+                return oldItem.name == newItem.name
             }
 
             override fun areContentsTheSame(oldItem: FavoriteCity, newItem: FavoriteCity): Boolean {

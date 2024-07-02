@@ -20,7 +20,6 @@ import com.max.openweatherapp.data.room.favoritesDataSource.FavoriteCity
 //extention static fun
 fun City.toFavoriteCity(): FavoriteCity {
     return FavoriteCity(
-        cityId = cityId,
         coordinates = coordinates,
         weatherParams = weatherParams,
         wind = wind,

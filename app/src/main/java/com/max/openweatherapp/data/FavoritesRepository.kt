@@ -31,8 +31,8 @@ class FavoritesRepository(
         localDataSource.updateCity(city)
     }
 
-    suspend fun getCityById(cityId: Long): FavoriteCity {
-        return localDataSource.getCityById(cityId)
+    suspend fun getCityById(name: String): FavoriteCity {
+        return localDataSource.getCityById(name)
     }
 
     suspend fun updateCitiesWeather(cities: List<FavoriteCity>) {
@@ -57,9 +57,6 @@ class FavoritesRepository(
                     weatherParams = weather.weatherParamsResponse,
                     wind = weather.windResponse,
                     icon = weather.weatherTypeInformation.firstOrNull()?.icon,
-//                    cityTemp = kelvinToCelsiusConverter(weather.weatherParamsResponse.temp),
-//                    cityWindSpeed = "${weather.windResponse.speed} М/С",
-//                    icon = weather.weatherTypeInformation.first().icon
                 )
                 updateCity(updatedCity)
             }

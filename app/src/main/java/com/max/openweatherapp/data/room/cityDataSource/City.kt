@@ -17,8 +17,6 @@ import com.max.openweatherapp.data.network.model.WindResponse
 data class City(
     @PrimaryKey(autoGenerate = false)
     val key: Long = 0L,
-    @ColumnInfo(name = "city_id")
-    val cityId: Long = 0L,
     @Embedded(prefix = "coordinates_")
     val coordinates: CoordinatesResponse,
 //    @ColumnInfo(name = "city_base")

@@ -12,7 +12,7 @@ import com.max.openweatherapp.data.network.model.WindResponse
 @Entity(tableName = "favorite_city_table")
 data class FavoriteCity(
     @PrimaryKey(autoGenerate = false)
-    val cityId: Long = 0L,
+    val name: String,
     @Embedded(prefix = "coordinates_")
     val coordinates: CoordinatesResponse,
 //    @ColumnInfo(name = "city_base")
@@ -31,8 +31,7 @@ data class FavoriteCity(
 //    val timezone: Long,
 //    @ColumnInfo(name = "city_api_id")
 //    val id: Long,
-    @ColumnInfo(name = "city_name")
-    val name: String,
+
 //    @ColumnInfo(name = "city_cod")
 //    val cod: Long,
     @ColumnInfo(name = "city_icon")
